@@ -1,0 +1,1136 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>ИНФОРМАЦИЯ ЛОРНИКОВ</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: #0a0a0a;
+            color: #fff;
+            min-height: 100vh;
+            overflow-x: hidden;
+            transition: all 0.5s ease;
+        }
+
+        body.light-theme {
+            background: #fff5f5;
+            color: #330000;
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 20px;
+        }
+
+        /* Тема переключения */
+        .theme-switcher {
+            position: fixed;
+            top: 20px;
+            right: 20px;
+            z-index: 1000;
+            background: rgba(255, 0, 0, 0.1);
+            border: 1px solid rgba(255, 0, 0, 0.2);
+            border-radius: 20px;
+            padding: 8px;
+            display: flex;
+            gap: 5px;
+            backdrop-filter: blur(10px);
+        }
+
+        .theme-switcher button {
+            background: transparent;
+            border: none;
+            color: #ff9999;
+            padding: 8px 12px;
+            border-radius: 15px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            display: flex;
+            align-items: center;
+            gap: 5px;
+        }
+
+        .theme-switcher button.active {
+            background: rgba(255, 0, 0, 0.25);
+            color: #fff;
+        }
+
+        .light-theme .theme-switcher {
+            background: rgba(255, 200, 200, 0.9);
+            border: 1px solid rgba(255, 100, 100, 0.3);
+        }
+
+        .light-theme .theme-switcher button {
+            color: #cc6666;
+        }
+
+        .light-theme .theme-switcher button.active {
+            background: rgba(255, 100, 100, 0.3);
+            color: #990000;
+        }
+
+        /* Красная анимация фона для темной темы */
+        .bg-animation {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            z-index: -1;
+            background: linear-gradient(135deg, #0a0000 0%, #1a0000 50%, #0a0000 100%);
+            overflow: hidden;
+            transition: all 0.5s ease;
+        }
+
+        .light-theme .bg-animation {
+            background: linear-gradient(135deg, #fff5f5 0%, #ffeaea 50%, #fff5f5 100%);
+        }
+
+        .red-pulse {
+            position: absolute;
+            border-radius: 50%;
+            background: radial-gradient(circle, rgba(255, 0, 0, 0.1) 0%, rgba(255, 0, 0, 0) 70%);
+            animation: pulse 4s infinite ease-in-out;
+        }
+
+        .light-theme .red-pulse {
+            background: radial-gradient(circle, rgba(255, 200, 200, 0.3) 0%, rgba(255, 200, 200, 0) 70%);
+        }
+
+        @keyframes pulse {
+            0%, 100% { transform: scale(1); opacity: 0.2; }
+            50% { transform: scale(1.1); opacity: 0.4; }
+        }
+
+        /* Заголовок */
+        .main-header {
+            text-align: center;
+            padding: 40px 20px 30px;
+            position: relative;
+        }
+
+        .main-header h1 {
+            font-size: 3.5em;
+            background: linear-gradient(45deg, #ff0000, #ff3333, #cc0000);
+            -webkit-background-clip: text;
+            background-clip: text;
+            color: transparent;
+            text-shadow: 0 0 30px rgba(255, 0, 0, 0.3);
+            margin-bottom: 15px;
+            letter-spacing: 1px;
+        }
+
+        .light-theme .main-header h1 {
+            background: linear-gradient(45deg, #990000, #cc3333, #660000);
+            -webkit-background-clip: text;
+            background-clip: text;
+            color: transparent;
+            text-shadow: 0 0 30px rgba(255, 100, 100, 0.3);
+        }
+
+        .main-header .subtitle {
+            font-size: 1.2em;
+            color: #ff6666;
+            max-width: 600px;
+            margin: 0 auto;
+            line-height: 1.5;
+        }
+
+        .light-theme .main-header .subtitle {
+            color: #cc6666;
+        }
+
+        /* Красная линия */
+        .red-line {
+            height: 2px;
+            background: linear-gradient(90deg, transparent, #ff0000, transparent);
+            margin: 20px auto;
+            width: 90%;
+            max-width: 900px;
+            transition: all 0.5s ease;
+        }
+
+        .light-theme .red-line {
+            background: linear-gradient(90deg, transparent, #cc3333, transparent);
+        }
+
+        /* Навигационные вкладки */
+        .tabs-container {
+            display: flex;
+            justify-content: center;
+            gap: 15px;
+            margin: 30px auto;
+            flex-wrap: wrap;
+            max-width: 900px;
+        }
+
+        .tab {
+            background: rgba(255, 0, 0, 0.1);
+            border: 1px solid rgba(255, 0, 0, 0.2);
+            border-radius: 10px;
+            padding: 15px 25px;
+            cursor: pointer;
+            font-size: 1.1em;
+            color: #ff9999;
+            transition: all 0.3s ease;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            min-width: 200px;
+            justify-content: center;
+        }
+
+        .light-theme .tab {
+            background: rgba(255, 200, 200, 0.3);
+            border: 1px solid rgba(255, 150, 150, 0.4);
+            color: #996666;
+        }
+
+        .tab:hover {
+            background: rgba(255, 0, 0, 0.2);
+            transform: translateY(-3px);
+            box-shadow: 0 5px 15px rgba(255, 0, 0, 0.2);
+        }
+
+        .light-theme .tab:hover {
+            background: rgba(255, 150, 150, 0.4);
+            box-shadow: 0 5px 15px rgba(255, 100, 100, 0.2);
+        }
+
+        .tab.active {
+            background: linear-gradient(45deg, rgba(255, 0, 0, 0.25), rgba(255, 51, 51, 0.25));
+            border-color: #ff3333;
+            color: #fff;
+            box-shadow: 0 0 20px rgba(255, 0, 0, 0.3);
+        }
+
+        .light-theme .tab.active {
+            background: linear-gradient(45deg, rgba(255, 100, 100, 0.3), rgba(255, 150, 150, 0.3));
+            border-color: #cc3333;
+            color: #990000;
+            box-shadow: 0 0 20px rgba(255, 100, 100, 0.3);
+        }
+
+        /* Контент вкладок */
+        .tab-content {
+            display: none;
+            background: rgba(20, 0, 0, 0.85);
+            border-radius: 15px;
+            padding: 30px;
+            margin: 30px auto;
+            max-width: 900px;
+            border: 1px solid rgba(255, 0, 0, 0.15);
+            backdrop-filter: blur(10px);
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.5);
+            min-height: 400px;
+            transition: all 0.5s ease;
+        }
+
+        .light-theme .tab-content {
+            background: rgba(255, 245, 245, 0.95);
+            border: 1px solid rgba(255, 200, 200, 0.5);
+            box-shadow: 0 10px 30px rgba(255, 100, 100, 0.1);
+        }
+
+        .tab-content.active {
+            display: block;
+            animation: fadeIn 0.5s ease;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(10px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        .tab-content h2 {
+            color: #ff3333;
+            font-size: 1.8em;
+            margin-bottom: 25px;
+            text-align: center;
+            border-bottom: 2px solid rgba(255, 0, 0, 0.3);
+            padding-bottom: 10px;
+        }
+
+        .light-theme .tab-content h2 {
+            color: #990000;
+            border-bottom: 2px solid rgba(255, 100, 100, 0.3);
+        }
+
+        /* Стили для контента */
+        .content-section {
+            margin-bottom: 30px;
+        }
+
+        .content-section h3 {
+            color: #ff3333;
+            font-size: 1.4em;
+            margin-bottom: 15px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            padding-bottom: 8px;
+            border-bottom: 1px solid rgba(255, 0, 0, 0.2);
+        }
+
+        .light-theme .content-section h3 {
+            color: #990000;
+            border-bottom: 1px solid rgba(255, 100, 100, 0.3);
+        }
+
+        .content-section h4 {
+            color: #ff6666;
+            font-size: 1.2em;
+            margin: 20px 0 10px;
+            padding-left: 10px;
+            border-left: 3px solid #ff3333;
+        }
+
+        .light-theme .content-section h4 {
+            color: #cc3333;
+            border-left: 3px solid #990000;
+        }
+
+        .content-section p {
+            color: #ffcccc;
+            line-height: 1.7;
+            margin-bottom: 12px;
+            text-align: justify;
+        }
+
+        .light-theme .content-section p {
+            color: #664444;
+        }
+
+        .content-list {
+            list-style: none;
+            padding-left: 20px;
+            margin: 15px 0;
+        }
+
+        .content-list li {
+            color: #ffcccc;
+            margin-bottom: 10px;
+            padding-left: 25px;
+            position: relative;
+            line-height: 1.6;
+        }
+
+        .light-theme .content-list li {
+            color: #664444;
+        }
+
+        .content-list li:before {
+            content: '•';
+            position: absolute;
+            left: 10px;
+            color: #ff3333;
+            font-weight: bold;
+        }
+
+        .light-theme .content-list li:before {
+            color: #990000;
+        }
+
+        /* ИСПРАВЛЕНИЕ: Добавлен min-width для цифр, чтобы они не наезжали на текст */
+        .number-list {
+            list-style: none;
+            padding-left: 20px;
+            margin: 15px 0;
+        }
+
+        .number-list li {
+            color: #ffcccc;
+            margin-bottom: 10px;
+            padding-left: 30px;
+            position: relative;
+            line-height: 1.6;
+        }
+
+        .light-theme .number-list li {
+            color: #664444;
+        }
+
+        .number-list li:before {
+            content: attr(data-number);
+            position: absolute;
+            left: 0;
+            color: #ff3333;
+            font-weight: bold;
+            min-width: 25px; /* Исправление: добавлен min-width */
+            display: inline-block;
+        }
+
+        .light-theme .number-list li:before {
+            color: #990000;
+        }
+
+        .sub-list {
+            list-style: none;
+            padding-left: 30px;
+            margin: 10px 0;
+        }
+
+        .sub-list li {
+            color: #ffdddd;
+            margin-bottom: 8px;
+            padding-left: 20px;
+            position: relative;
+            font-size: 0.95em;
+        }
+
+        .light-theme .sub-list li {
+            color: #886666;
+        }
+
+        .sub-list li:before {
+            content: '◦';
+            position: absolute;
+            left: 0;
+            color: #ff6666;
+        }
+
+        .light-theme .sub-list li:before {
+            color: #cc3333;
+        }
+
+        .note-box {
+            background: rgba(255, 0, 0, 0.15);
+            border-left: 4px solid #ff3333;
+            padding: 15px;
+            margin: 20px 0;
+            border-radius: 0 8px 8px 0;
+            color: #ffcccc;
+        }
+
+        .light-theme .note-box {
+            background: rgba(255, 200, 200, 0.3);
+            border-left: 4px solid #cc3333;
+            color: #664444;
+        }
+
+        .warning-box {
+            background: rgba(255, 100, 0, 0.15);
+            border-left: 4px solid #ff6600;
+            padding: 15px;
+            margin: 20px 0;
+            border-radius: 0 8px 8px 0;
+            color: #ffcccc;
+        }
+
+        .light-theme .warning-box {
+            background: rgba(255, 180, 100, 0.3);
+            border-left: 4px solid #cc5500;
+            color: #664444;
+        }
+
+        /* Улучшенные стили для блоков с информацией о персонажах */
+        .character-group {
+            background: rgba(255, 0, 0, 0.08);
+            border: 1px solid rgba(255, 51, 51, 0.25);
+            border-radius: 10px;
+            padding: 20px;
+            margin: 20px 0;
+            transition: all 0.3s ease;
+        }
+
+        .light-theme .character-group {
+            background: rgba(255, 200, 200, 0.2);
+            border: 1px solid rgba(255, 150, 150, 0.4);
+        }
+
+        .character-group:hover {
+            background: rgba(255, 0, 0, 0.12);
+            border-color: rgba(255, 51, 51, 0.4);
+            box-shadow: 0 5px 15px rgba(255, 0, 0, 0.1);
+        }
+
+        .light-theme .character-group:hover {
+            background: rgba(255, 200, 200, 0.3);
+            border-color: rgba(255, 100, 100, 0.5);
+            box-shadow: 0 5px 15px rgba(255, 100, 100, 0.1);
+        }
+
+        .character-group h4 {
+            color: #ff6666;
+            font-size: 1.2em;
+            margin: 0 0 15px 0;
+            padding-left: 10px;
+            border-left: 3px solid #ff3333;
+        }
+
+        .light-theme .character-group h4 {
+            color: #cc3333;
+            border-left: 3px solid #990000;
+        }
+
+        .penalty-box {
+            background: rgba(255, 0, 0, 0.2);
+            border: 1px solid rgba(255, 100, 100, 0.3);
+            padding: 15px;
+            margin: 20px 0;
+            border-radius: 8px;
+            color: #ffcccc;
+        }
+
+        .light-theme .penalty-box {
+            background: rgba(255, 200, 200, 0.4);
+            border: 1px solid rgba(255, 150, 150, 0.5);
+            color: #664444;
+        }
+
+        .exception {
+            color: #ffcc00;
+            font-weight: bold;
+            background: rgba(255, 204, 0, 0.1);
+            padding: 2px 6px;
+            border-radius: 4px;
+        }
+
+        .light-theme .exception {
+            color: #cc9900;
+            background: rgba(255, 204, 0, 0.2);
+        }
+
+        .highlight {
+            color: #ff3333;
+            font-weight: bold;
+            background: rgba(255, 51, 51, 0.1);
+            padding: 2px 6px;
+            border-radius: 4px;
+        }
+
+        .light-theme .highlight {
+            color: #990000;
+            background: rgba(255, 100, 100, 0.2);
+        }
+
+        /* Футер */
+        .footer {
+            text-align: center;
+            padding: 40px 20px 20px;
+            color: #ff6666;
+            border-top: 1px solid rgba(255, 0, 0, 0.2);
+            margin-top: 60px;
+        }
+
+        .light-theme .footer {
+            color: #cc6666;
+            border-top: 1px solid rgba(255, 200, 200, 0.5);
+        }
+
+        .footer p {
+            margin: 10px 0;
+        }
+
+        .version {
+            font-size: 0.9em;
+            color: #ff9999;
+        }
+
+        .light-theme .version {
+            color: #996666;
+        }
+
+        /* Анимации */
+        @keyframes glitch {
+            0% { transform: translate(0); }
+            20% { transform: translate(-2px, 2px); }
+            40% { transform: translate(-2px, -2px); }
+            60% { transform: translate(2px, 2px); }
+            80% { transform: translate(2px, -2px); }
+            100% { transform: translate(0); }
+        }
+
+        .glitch-text {
+            animation: glitch 0.5s infinite;
+            animation-play-state: paused;
+        }
+
+        .glitch-text:hover {
+            animation-play-state: running;
+        }
+
+        /* Адаптивность */
+        @media (max-width: 768px) {
+            .main-header h1 {
+                font-size: 2.5em;
+            }
+            
+            .theme-switcher {
+                top: 10px;
+                right: 10px;
+                padding: 6px;
+            }
+            
+            .theme-switcher button {
+                padding: 6px 10px;
+                font-size: 0.9em;
+            }
+            
+            .tab {
+                min-width: 150px;
+                padding: 12px 20px;
+                font-size: 1em;
+            }
+            
+            .tab-content {
+                padding: 20px;
+                min-height: 300px;
+            }
+            
+            .tab-content h2 {
+                font-size: 1.5em;
+            }
+            
+            .content-section h3 {
+                font-size: 1.2em;
+            }
+            
+            .character-group {
+                padding: 15px;
+            }
+        }
+
+        @media (max-width: 480px) {
+            .main-header h1 {
+                font-size: 2em;
+            }
+            
+            .main-header .subtitle {
+                font-size: 1em;
+            }
+            
+            .tabs-container {
+                flex-direction: column;
+                align-items: center;
+            }
+            
+            .tab {
+                width: 100%;
+                max-width: 300px;
+            }
+            
+            .content-list li,
+            .number-list li {
+                padding-left: 20px;
+            }
+            
+            /* Дополнительные исправления для мобильных */
+            .number-list li:before {
+                min-width: 20px; /* Уменьшаем для мобильных */
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="theme-switcher">
+        <button class="active" data-theme="dark" onclick="switchTheme('dark')">
+            <i class="fas fa-moon"></i> Тёмная
+        </button>
+        <button data-theme="light" onclick="switchTheme('light')">
+            <i class="fas fa-sun"></i> Светлая
+        </button>
+    </div>
+
+    <div class="bg-animation" id="bgAnimation"></div>
+    
+    <div class="container">
+        <header class="main-header">
+            <h1 class="glitch-text">РЕГЛАМЕНТ ЛОРНИКОВ</h1>
+            <p class="subtitle">Свод правил и регламентов для лорных персонажей</p>
+        </header>
+
+        <div class="red-line"></div>
+
+        <!-- Навигационные вкладки -->
+        <div class="tabs-container">
+            <div class="tab active" data-tab="regulations">
+                <i class="fas fa-scroll"></i>
+                Регламент лорников
+            </div>
+            <div class="tab" data-tab="responsibilities">
+                <i class="fas fa-tasks"></i>
+                Обязанности лорников
+            </div>
+            <div class="tab" data-tab="penalties">
+                <i class="fas fa-gavel"></i>
+                Взыскания лорников
+            </div>
+            <div class="tab" data-tab="information">
+                <i class="fas fa-info-circle"></i>
+                Информация лорников
+            </div>
+        </div>
+
+        <!-- Контент вкладок -->
+        <div id="regulations" class="tab-content active">
+            <h2>Регламент лорных персонажей</h2>
+            
+            <div class="content-section">
+                <h3><i class="fas fa-hourglass-half"></i> Испытательный срок</h3>
+                <ul class="content-list">
+                    <li>Испытательный срок длится <span class="highlight">две недели</span> и начинается с момента вашего прохождения на лорного персонажа</li>
+                    <li>В случае получения выговора на испытательном сроке вы получаете снятие и перм ЧС лорных персонажей</li>
+                    <li>Взятие отпуска на испытательном сроке продлевает время его действия. Соотношение 1 к 1</li>
+                </ul>
+                <div class="note-box">
+                    <p><strong>Пояснение:</strong> 1 день отпуска = +1 день к испытательному сроку.</p>
+                </div>
+            </div>
+
+            <div class="content-section">
+                <h3><i class="fas fa-dice"></i> Команда /roll и статус no-roll</h3>
+                <p>Команда /roll используется в случаях, когда Вы пытаетесь совершить действие, результат которого зависит от случайности — то есть от числа, выпавшего Вам и другому игроку.</p>
+                
+                <!-- Исправленный блок для Хашир/Лун/Лидеров -->
+                <div class="character-group">
+                    <h4><i class="fas fa-crown"></i> Хаширы / Луны / Лидеры Организаций</h4>
+                    <ul class="content-list">
+                        <li>Эти персонажи обладают статусом <span class="highlight">no-roll</span>, что означает приоритет их действий из-за силы и положения</li>
+                        <li>Их действия не требуют броска /roll при взаимодействии с обычными персонажами</li>
+                        <li>Однако, если действие происходит между равными по статусу (например, Хашира против Хаширы или Луна против Луны), команда /roll обязательна</li>
+                        <li>Даже при статусе no-roll, действия должны соответствовать логике и РП-правилам</li>
+                    </ul>
+                </div>
+                
+                <div class="note-box">
+                    <p><strong>Пример:</strong></p>
+                    <p>• Хашира хватает обычного охотника — бросок не требуется.</p>
+                    <p>• Хашира атакует другого хаширу  — оба используют /roll.</p>
+                </div>
+
+                <!-- Исправленный блок для Главных героев -->
+                <div class="character-group">
+                    <h4><i class="fas fa-user"></i> Главные герои и прочие лорные персонажи</h4>
+                    <ul class="content-list">
+                        <li>Такие персонажи обязаны использовать /roll для определения исхода своих действий</li>
+                        <li>Они не могут применять /roll против персонажей со статусом no-roll (Хаширы, Лидеры, Луны)</li>
+                        <li>Однако, если ситуация подразумевает попытку избежать, выбраться или отступить, бросок допускается</li>
+                    </ul>
+                </div>
+                
+                <div class="note-box">
+                    <p><strong>Пример:</strong></p>
+                    <p>Хашира схватил героя за хвори в области шеи.</p>
+                    <p>Попытался выскользнуть из хвори, чтобы оно осталось в руках Столпа.</p>
+                    <p>— После этого герой кидает /roll, чтобы определить, удалось ли ему вырваться.</p>
+                </div>
+            </div>
+
+            <div class="content-section">
+                <h3><i class="fas fa-shield-alt"></i> Правила статуса</h3>
+                <ul class="content-list">
+                    <li>Статус не означает вседозволенность</li>
+                    <li>Любые действия должны быть логичными, соответствовать канону и правилам RP</li>
+                    <li>За использование статуса для нелогичных, нереалистичных или нарушающих баланс действий может последовать наказание</li>
+                </ul>
+                
+                <div class="warning-box">
+                    <p><strong>Напоминание:</strong></p>
+                    <p>/roll — это инструмент для честного и справедливого определения исхода, а не способ избежать логики и отыгровки.</p>
+                    <p>Всегда сохраняйте роль, уважение к логике мира и последовательность действий.</p>
+                </div>
+            </div>
+
+            <div class="content-section">
+                <h3><i class="fas fa-heart"></i> Регламент соблюдения ERP логики</h3>
+                <ul class="content-list">
+                    <li>Соблюдаем канон пары (Обанай - Мицури, Тазик - Канао, Аой - Иноске, Зеницу - Незуко, Тенген - его жены и тд.)</li>
+                    <li>Всем лорникам, которым по РП меньше 14 лет запрет на ERP</li>
+                    <li>ЕРП только с противоположным полом</li>
+                    <li>Соблюдать логику развития ваших отношений</li>
+                    <li>Запрещено доводить ERP до стадии заведения детей и их рождения (секс и ничего больше, без роста населения на юфусе)</li>
+                </ul>
+            </div>
+
+            <div class="content-section">
+                <h3><i class="fas fa-users"></i> Общие положения</h3>
+                <ul class="number-list">
+                    <li data-number="1.">Данный регламент обязателен к исполнению всеми наборными персонажами</li>
+                    <li data-number="1.1.">Наборные лорные персонажи второго сервера не могут стоять одновременно на первом сервере на наборном лорном персонаже, а также это работает наоборот</li>
+                    <li data-number="1.2.">В случае рецидива нарушений мера наказаний увеличивается</li>
+                    <li data-number="1.3.">Каждый лорный персонаж обязан строго и четко выполнять поставленные РП составом указания, связанные с проектом</li>
+                    <li data-number="1.4.">Каждый лорный персонаж обязан строго и четко выполнять поставленные лидером фракции обязанности и указания по ней</li>
+                    <li data-number="1.5.">Каждый наборный лорный персонаж обязан строго и четко выполнять расписанные обязанности</li>
+                    <li data-number="1.6.">Каждый лорный персонаж обязан в полной мере отыгрывать свою квоту по онлайну. Категорически запрещено отыгрывать квоту в AFK или выполнением какой-либо бесполезной деятельностью</li>
+                    <li data-number="1.7.">Квота лорных персонажей учитывается с 16:00 до 00:00 по МСК</li>
+                    <li data-number="1.8.">Запрещена махинация с правилами внутреннего регламента лорников, так и активный поиск дыр в нем</li>
+                    <li data-number="1.9.">Столпы/Луны обязуются контролировать собственный состав, в это входит если вы замечаете массовые нарушения правил вы должны предотвратить их беседой/пресечением. При массовых нарушениях устава, массовом неадекватном поведении также считается данный пункт</li>
+                </ul>
+            </div>
+        </div>
+
+        <div id="responsibilities" class="tab-content">
+            <h2>Обязанности лорных персонажей</h2>
+            
+            <div class="content-section">
+                <h3><i class="fas fa-clock"></i> Prime-Time для Столпов, Лун и Главных героев</h3>
+                <ul class="content-list">
+                    <li>Каждый день, начиная с <span class="highlight">16:00 до 00:00</span>, все Столпы и Луны, а также главные герои обязаны появиться на сервере и находиться на нем на протяжении <span class="highlight">90 минут</span> (активного времени)</li>
+                    <li>Активность Столпа и Луны в данный период времени должна достигать максимума, время AFK снижено до минимума. Афк с оповещением в OOC или Asay чаты максимум 15 минут</li>
+                    <li>Активность Главных героев обязана быть в полном масштабе для игроков сервера</li>
+                    <li>Лорные персонажи обязуются ежедневно предоставлять скриншот в их ветку онлайна, а также заполнять/выполнять отчетность строго по поставленным критериям в информации лун/столпов/гг</li>
+                </ul>
+            </div>
+
+            <div class="content-section">
+                <h3><i class="fas fa-user-tie"></i> Вторые Профессии</h3>
+                <p>Вторые профессии предназначены только для лун/столпов.</p>
+                
+                <!-- Исправленный блок для Истребителей -->
+                <div class="character-group">
+                    <h4><i class="fas fa-fire"></i> Истребители</h4>
+                    <ul class="content-list">
+                        <li>Столпы могут вступать в любое открытое дыхание, а также на любое закрытое с полноценным вступлением в отряд, получением роли и заниманием слота в дыхании (Речь идет про право выбора)</li>
+                        <li><span class="exception">Исключение: донатные дыхания</span></li>
+                    </ul>
+                </div>
+                
+                <!-- Исправленный блок для Демонов -->
+                <div class="character-group">
+                    <h4><i class="fas fa-ghost"></i> Демоны</h4>
+                    <ul class="content-list">
+                        <li>Луны могут вступать в любой отряд так же как и столпы, или профу не выше демона низшей магии крови (Речь идет про право выбора)</li>
+                        <li>Если хотите сесть на профу Мрака - запрашиваете у главы мрака, тоже самое с отрекшимися, так как по сути им владеет Редзо</li>
+                        <li><span class="exception">Исключение у демонов: донатные отряды</span></li>
+                    </ul>
+                </div>
+                
+                <div class="warning-box">
+                    <p><strong>Важные правила:</strong></p>
+                    <ul class="content-list">
+                        <li>Вторая профессия у столпов и лун <span class="highlight">ИСКЛЮЧИТЕЛЬНО</span> после отыгровки своей основной квоты. Отпуск же подразумевает ваше полное отсутствие на сервере</li>
+                        <li>Если Столп/Луна имеет у себя выговор, то он не может переключаться на вторую профу после отыгровки квоты</li>
+                        <li><span class="exception">Исключение: Донат модель или донат лорник</span></li>
+                    </ul>
+                </div>
+            </div>
+
+            <div class="content-section">
+                <h3><i class="fas fa-gavel"></i> Правила поведения</h3>
+                <ul class="number-list">
+                    <li data-number="2.">Запрещено злоупотребление своими полномочиями</li>
+                    <li data-number="2.1.">Каждый наборный персонаж своим поведением (включая вторую профессию) должен подавать пример другим игрокам. Запрещается вне РП грубить, уничижительно общаться или как-либо по-другому выказывать неуважение к игрокам проекта, нарушать или подбивать на нарушение правил проекта. Помимо этого лорные персонажи должны показывать пример качественного игрового отыгрыша персонажей</li>
+                    <li data-number="2.3.">Категорически запрещено использовать свои привилегии для "душки" или "слива" других игроков</li>
+                    <li data-number="2.4.">Каждый лорный персонаж должен в полной мере отыгрывать своего персонажа и развивать его с учетом вселенной проекта и его таймлайна</li>
+                    <li data-number="2.5.">Все конфликты между лорными персонажами должны решаться с представителем РП состава</li>
+                    <li data-number="2.6.">Лорным персонажам запрещено участие в NonRP процессе</li>
+                    <li data-number="2.7.">При получении максимального количества выговоров во фракции, человек получает выговор на своего лорного персонажа</li>
+                </ul>
+            </div>
+
+            <div class="content-section">
+                <h3><i class="fas fa-clipboard-list"></i> Правила отчетности наборных лорных персонажей</h3>
+                <ul class="number-list">
+                    <li data-number="3.">Каждый наборный лорный персонаж обязан заполнять отчетность строго по установленному концепту</li>
+                    <li data-number="3.1.">Каждый наборный лорный персонаж обязан отправлять отчеты в установленное время</li>
+                    <li data-number="3.2.">Категорически запрещено фабриковать отчетность</li>
+                    <li data-number="3.3.">Запрещено закрывать всю отчетность за 3 дня. Ваш отчет должен равномерно заполняться по мере установленного периода</li>
+                    <li data-number="3.4.">Запрещено прикладывать обработанные как-либо скриншоты. На приложенных скриншотах должен быть полностью виден игровой HUD, время и вы</li>
+                    <li data-number="3.5.">Запрещено скидывать с одной ситуации более 4 скриншотов</li>
+                    <li data-number="3.6.">Запрещено заполнять отчетность бесполезной, однотипной или спам деятельностью</li>
+                    <li data-number="3.7.">Максимальное количество скриншотов с деятельностью в дискорде - 4</li>
+                    <li data-number="3.7.1">ㅤМаксимальное количество скриншотов с мероприятия - 3</li>
+                    <li data-number="3.8.">Максимальное количество скриншотов с захватов - 2</li>
+                    <li data-number="3.9.">Проведение фракционных ивентов или событий для состава вашего отряда/дыхания должно сопровождаться предварительным оповещением в дискорд канале</li>
+                    <li data-number="3.10">ㅤОтчет по обязательным ивентам/событиям сопровождается в отчете тремя скриншотами:
+                        <ul class="sub-list">
+                            <li>Скриншот с оповещением в дискорде о грядущем ивенте / событии</li>
+                            <li>Скриншот с сбора/организации/инструктажа на ивент или событие</li>
+                            <li>Процесс события/ивента или его завершение</li>
+                        </ul>
+                    </li>
+                    <li data-number="3.11">ㅤВ случае если не удается организовать состав для проведения события дыхания/отряда, вы проводите событие для остальных членов фракции</li>
+                    <li data-number="3.12">ㅤЕсли вы проводите мероприятие/тренировку то оно засчитывается как 0.5 для троих в квоту, либо 1 для двоих в квоту</li>
+                </ul>
+            </div>
+
+            <div class="content-section">
+                <h3><i class="fas fa-user-clock"></i> Правила касательно AFK на лорных персонажах</h3>
+                <ul class="number-list">
+                    <li data-number="4.">Максимально допустимое общее время в АФК - 15 минут</li>
+                    <li data-number="4.1.">Перед уходом в АФК вы должны оповестить игроков в ООС чат о том насколько вы уходите</li>
+                    <li data-number="4.2.">Категорически запрещено уходить в АФК на видных местах</li>
+                </ul>
+            </div>
+        </div>
+
+        <div id="penalties" class="tab-content">
+            <h2>Взыскания для лорных персонажей</h2>
+            
+            <div class="content-section">
+                <h3><i class="fas fa-exclamation-circle"></i> Регламент взысканий</h3>
+                <p><span class="highlight">Выговор</span> - это дисциплинарное взыскание, которое выдается за нарушение правил проекта, внутренних регламентов лорников первого сервера или невыполнение квот.</p>
+                
+                <!-- Исправленный блок для видов выговоров -->
+                <div class="character-group">
+                    <h4>Виды выговоров</h4>
+                    <ul class="content-list">
+                        <li><span class="highlight">Обычные выговоры</span> - выдаются за стандартные нарушения регламента</li>
+                        <li><span class="highlight">Перманентные выговоры</span> - выдаются в случае серьезных нарушений или рецидива</li>
+                    </ul>
+                    <div class="note-box">
+                        <p><strong>Примечание:</strong> Перманентные выговоры можно отработать только через 2 месяца и только при хорошем поведении.</p>
+                    </div>
+                </div>
+            </div>
+
+            <div class="content-section">
+                <h3><i class="fas fa-ban"></i> Санкции за обычный выговор</h3>
+                <ul class="content-list">
+                    <li>Запрет на использование второй профессии после отыгровки основной квоты</li>
+                    <li>Норма онлайна повышается до 2-х часов</li>
+                </ul>
+            </div>
+
+            <div class="content-section">
+                <h3><i class="fas fa-exclamation-triangle"></i> Предупреждения</h3>
+                <p><span class="highlight">Предупреждение</span> - это дисциплинарное взыскание, которое выдается за незначительные нарушения правил проекта, внутренних регламентов лорников первого сервера или невыполнение квот.</p>
+                <ul class="content-list">
+                    <li>Предупреждения слетают спустя неделю после получения и никаких санкций на человека не накладывают</li>
+                </ul>
+            </div>
+
+            <div class="content-section">
+                <h3><i class="fas fa-sync-alt"></i> Отработка взысканий</h3>
+                <ul class="content-list">
+                    <li>Отработка выговора проводится через выполнение задания от РП состава</li>
+                    <li>Отработать выговор можно через неделю после его получения</li>
+                    <li>Предупреждения автоматически снимаются через неделю после получения</li>
+                    <li>Перманентные выговоры можно отработать только через 2 месяца и только при хорошем поведении</li>
+                </ul>
+            </div>
+
+            <div class="content-section">
+                <h3><i class="fas fa-user-slash"></i> Регламент ЧС лорников</h3>
+                <p>При снятии лорник получает черный список лорников сроком от 5 дней до перманентного черного списка в зависимости от причины снятия.</p>
+                
+                <div class="penalty-box">
+                    <h4>1. Снятие после испытательного срока</h4>
+                    <ul class="content-list">
+                        <li>При снятии сразу после испытательного срока вы получаете ЧС сроком на 1 месяц</li>
+                        <li>При снятии через некоторое время вы получите чс сроком на 5 дней в случае если не имеете выговоров</li>
+                    </ul>
+                </div>
+                
+                <div class="penalty-box">
+                    <h4>2. Снятие с выговорами</h4>
+                    <p>При снятии после испытательного срока с выговорами 1/2/3 вы получаете чс соответствующий количеству выговоров:</p>
+                    <ul class="content-list">
+                        <li>1 выговор = ЧС 3 месяца</li>
+                        <li>2 выговора = ЧС 6 месяцев</li>
+                        <li>3 выговора = Перм ЧС</li>
+                    </ul>
+                </div>
+                
+                <div class="penalty-box">
+                    <h4>3. Снятие без двухнедельного отчета</h4>
+                    <ul class="content-list">
+                        <li>На испытательном сроке = Перм ЧС</li>
+                        <li>С 1 выговором = ЧС от 3 месяцев</li>
+                        <li>С 2 выговорами = ЧС от 6 месяцев</li>
+                    </ul>
+                </div>
+            </div>
+
+            <div class="content-section">
+                <h3><i class="fas fa-umbrella-beach"></i> Отпуска</h3>
+                <ul class="content-list">
+                    <li>Максимальный отпуск <span class="highlight">1 неделя</span>, отпуск будет складываться из всех ваших отпусков, если они были протяженностью на неделю. КД на отпуск будет <span class="highlight">3 недели</span></li>
+                    <li><span class="exception">Исключение: Семейные обстоятельства</span></li>
+                    <li>Норма онлайна считается только в прайм тайм. Не успеваете отонлайнить - отпуск будет принят до <span class="highlight">18:30</span> если причина отпуска что-то по типу "отдых или устал от сервера". После этого времени отпуска с подобной причиной будут отклоняться</li>
+                </ul>
+                
+                <div class="warning-box">
+                    <p><strong>Важное замечание:</strong> Если вы берете отпуск по причине [отдых], но вы играете на первом сервере для отыгрыша квоты, или вы написали [болеете] и играете на первом сервере, то ваш отпуск будет аннулирован а также вы получите наказание за квоту.</p>
+                </div>
+            </div>
+        </div>
+
+        <div id="information" class="tab-content">
+            <h2>Информация для лорных персонажей</h2>
+            
+            <div class="content-section">
+                <h3><i class="fas fa-info-circle"></i> Общая информация</h3>
+                <ul class="content-list">
+                    <li>Все вопросы по лорным персонажам решаются через РП-персонал</li>
+                    <li>Отчетность предоставляется ежедневно в соответствующие ветки Discord</li>
+                    <li>Все изменения в правилах и регламентах анонсируются заранее</li>
+                    <li>Рекомендуется следить за обновлениями в канале объявлений в официальном дискорде проекта</li>
+                </ul>
+            </div>
+
+            <div class="content-section">
+                <h3><i class="fas fa-calendar-alt"></i> Временные рамки</h3>
+                <p>Действие происходит в промежутке <span class="highlight">перед/после горы Натагума</span>. Учитывайте это при отыгрыше своих персонажей и их возможностей.</p>
+                <div class="note-box">
+                    <p>У нас временной промежуток примерно перед/после горы Натагума, и главные персонажи не такие сильные, особенно, если стоят на испытательном сроке. По мере продвижения и получения статуса "киное" положение может меняться, но не стоит давать в аргументацию словам персонала, что тот-то персонаж в такой-то ярке сделал это. У нас не эта арка. У нас есть еще такое слово, как механика сервера, потому тот же Танджиро Камадо имеет в своем арсенале "танец бога огня" или же тоже Незуко Камадо с магией крови и режимом берсерка.</p>
+                </div>
+            </div>
+
+            <div class="content-section">
+                <h3><i class="fas fa-headset"></i> Отвечающие за лорников</h3>
+                <ul class="content-list">
+                    <li>РП Куратор</li>
+                    <li>Деп.РП Куратор закрепеленный за демонами</li>
+                    <li>Деп.РП Куратор закрепеленный за истребителями</li>
+                </ul>
+            </div>
+        </div>
+
+        <footer class="footer">
+            <p>© 2025 ЛОРНИКИ YUFU.SU #2 | Все права защищены</p>
+            <p class="version">Версия 2.0</p>
+            <p style="margin-top: 20px; font-size: 0.8em; color: #ff6666;">
+                <i class="fas fa-book"></i> Система лорных персонажей
+            </p>
+        </footer>
+    </div>
+
+    <script>
+        // Создаем красные пульсации на фоне
+        function createRedPulses() {
+            const bg = document.getElementById('bgAnimation');
+            const count = 6;
+            
+            for (let i = 0; i < count; i++) {
+                const pulse = document.createElement('div');
+                pulse.className = 'red-pulse';
+                
+                const size = Math.random() * 300 + 100;
+                pulse.style.width = `${size}px`;
+                pulse.style.height = `${size}px`;
+                pulse.style.left = `${Math.random() * 100}%`;
+                pulse.style.top = `${Math.random() * 100}%`;
+                
+                pulse.style.animationDelay = `${Math.random() * 2}s`;
+                
+                bg.appendChild(pulse);
+            }
+        }
+
+        // Управление вкладками
+        function setupTabs() {
+            const tabs = document.querySelectorAll('.tab');
+            const tabContents = document.querySelectorAll('.tab-content');
+
+            tabs.forEach(tab => {
+                tab.addEventListener('click', () => {
+                    const tabId = tab.getAttribute('data-tab');
+                    
+                    tabs.forEach(t => t.classList.remove('active'));
+                    tabContents.forEach(content => content.classList.remove('active'));
+                    
+                    tab.classList.add('active');
+                    document.getElementById(tabId).classList.add('active');
+                    
+                    window.scrollTo({
+                        top: document.getElementById(tabId).offsetTop - 100,
+                        behavior: 'smooth'
+                    });
+                });
+            });
+        }
+
+        // Переключение темы
+        function switchTheme(theme) {
+            const body = document.body;
+            const themeButtons = document.querySelectorAll('.theme-switcher button');
+            
+            body.classList.remove('dark-theme', 'light-theme');
+            body.classList.add(theme + '-theme');
+            
+            themeButtons.forEach(btn => {
+                btn.classList.remove('active');
+                if (btn.getAttribute('data-theme') === theme) {
+                    btn.classList.add('active');
+                }
+            });
+            
+            localStorage.setItem('theme', theme);
+        }
+
+        // Эффект мигания текста
+        function glitchEffect() {
+            const titles = document.querySelectorAll('.glitch-text');
+            titles.forEach(title => {
+                setInterval(() => {
+                    if (Math.random() > 0.7) {
+                        title.style.textShadow = '1px 1px 0 #ff0000, -1px -1px 0 #00ffff';
+                        setTimeout(() => {
+                            title.style.textShadow = '0 0 30px rgba(255, 0, 0, 0.3)';
+                        }, 100);
+                    }
+                }, 3000);
+            });
+        }
+
+        // Случайное изменение цвета линии
+        function pulseLine() {
+            const line = document.querySelector('.red-line');
+            setInterval(() => {
+                const intensity = Math.random() * 0.5 + 0.5;
+                const isLight = document.body.classList.contains('light-theme');
+                const color = isLight ? '204, 51, 51' : '255, 0, 0';
+                line.style.background = `linear-gradient(90deg, transparent, rgba(${color}, ${intensity}), transparent)`;
+            }, 2000);
+        }
+
+        // Исправление нумерации в списках
+        function fixNumbering() {
+            // Исправляем нумерацию для всех нумерованных списков
+            const numberLists = document.querySelectorAll('.number-list li');
+            
+            numberLists.forEach(li => {
+                const number = li.getAttribute('data-number');
+                // Убеждаемся, что в конце есть точка и нет лишних пробелов
+                if (number && !number.endsWith('.')) {
+                    li.setAttribute('data-number', number + '.');
+                }
+            });
+        }
+
+        // Инициализация при загрузке
+        document.addEventListener('DOMContentLoaded', () => {
+            createRedPulses();
+            setupTabs();
+            glitchEffect();
+            pulseLine();
+            fixNumbering();
+            
+            // Восстанавливаем тему из localStorage
+            const savedTheme = localStorage.getItem('theme') || 'dark';
+            switchTheme(savedTheme);
+            
+            // Эффект при наведении на вкладки
+            document.querySelectorAll('.tab').forEach(tab => {
+                tab.addEventListener('mouseenter', () => {
+                    if (!tab.classList.contains('active')) {
+                        tab.style.transform = 'translateY(-3px)';
+                        const isLight = document.body.classList.contains('light-theme');
+                        const shadowColor = isLight ? '255, 100, 100' : '255, 0, 0';
+                        tab.style.boxShadow = `0 5px 15px rgba(${shadowColor}, 0.2)`;
+                    }
+                });
+                
+                tab.addEventListener('mouseleave', () => {
+                    if (!tab.classList.contains('active')) {
+                        tab.style.transform = 'translateY(0)';
+                        tab.style.boxShadow = 'none';
+                    }
+                });
+            });
+        });
+    </script>
+</body>
+</html>
