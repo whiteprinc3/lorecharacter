@@ -1,0 +1,822 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+  <meta charset="UTF-8" />
+  <title>Регламент лорников — Yufu.Su</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <style>
+    :root {
+      --bg: #1c1917;
+      --bg-alt: #292524;
+      --accent: #a8a29e;
+      --accent-soft: rgba(168, 162, 158, 0.15);
+      --text: #ffffff;
+      --muted: #9ca3af;
+      --border: #44403c;
+      --danger: #f87171;
+      --shadow: 0 18px 45px rgba(0, 0, 0, 0.5);
+      --radius-lg: 18px;
+      --radius-sm: 10px;
+    }
+    .theme-light {
+      --bg: #f3f4f6;
+      --bg-alt: #ffffff;
+      --accent: #64748b;
+      --accent-soft: rgba(100, 116, 139, 0.12);
+      --text: #020617;
+      --muted: #4b5563;
+      --border: #d1d5db;
+      --danger: #dc2626;
+      --shadow: 0 18px 45px rgba(148, 163, 184, 0.4);
+    }
+    .theme-light body {
+      background: radial-gradient(circle at top left, #e2e8f0 0, rgba(243,244,246,0) 55%), radial-gradient(circle at bottom right, #cbd5e1 0, rgba(243,244,246,0) 55%), var(--bg);
+    }
+    .theme-light .shell {
+      background: linear-gradient(135deg, #fff, #f8fafc);
+      border-color: rgba(148,163,184,0.8);
+      backdrop-filter: blur(18px);
+    }
+    .theme-light .shell-header {
+      border-bottom-color: rgba(148,163,184,0.7);
+      background: linear-gradient(90deg, rgba(100,116,139,0.08) 0, #f1f5f9 50%);
+    }
+    .theme-light .card {
+      background: linear-gradient(135deg, rgba(248,250,252,0.9) 0, #fff 55%);
+      border-color: #e2e8f0;
+      box-shadow: 0 10px 30px rgba(100,116,139,0.15);
+    }
+    .theme-light table { background: #f8fafc; }
+    .theme-light th { background: #e2e8f0; color: #475569; border-bottom-color: #cbd5e1; }
+    .theme-light tr:nth-child(even) td { background: #f1f5f9; }
+    .theme-light tr:hover td { background: #e2e8f0; }
+    .theme-light code { background: #f1f5f9; color: #0f172a; border-color: #cbd5e1; }
+    .theme-light .key { color: #475569; }
+    .theme-light .warn { color: #b45309; }
+    .theme-light .footer { border-top-color: #e2e8f0; color: #64748b; }
+    .theme-light .badge { background: #e7e5e4; border-color: #d6d3d1; color: #44403c; }
+    .theme-light .badge-dot { background: #78716c; box-shadow: 0 0 8px rgba(120,113,108,0.4); }
+
+    * { box-sizing: border-box; }
+    body {
+      position: relative;
+      isolation: isolate;
+      margin: 0;
+      min-height: 100vh;
+      font-family: system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+      color: var(--text);
+      background: radial-gradient(circle at top left, #2d2a28 0, rgba(28,25,23,0) 60%), radial-gradient(circle at bottom right, #3d3835 0, rgba(28,25,23,0) 60%), var(--bg);
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      padding: 32px 16px;
+    }
+    body::before {
+      content: "";
+      position: fixed;
+      inset: 0;
+      pointer-events: none;
+      opacity: 0;
+      transition: opacity 0.35s ease;
+      background: linear-gradient(
+        to bottom,
+        rgba(255,255,255,0.16) 0 33.33%,
+        rgba(37,99,235,0.20) 33.33% 66.66%,
+        rgba(220,38,38,0.16) 66.66% 100%
+      );
+      z-index: 0;
+    }
+    body.tricolor-bg::before { opacity: 1; }
+    body::after {
+      content: "";
+      position: fixed;
+      inset: 0;
+      pointer-events: none;
+      opacity: 0;
+      transition: opacity 0.35s ease;
+      background:
+        linear-gradient(rgba(0,0,0,0.28), rgba(0,0,0,0.28)),
+        url("putin-bear.jpg") center/cover no-repeat,
+        url("https://upload.wikimedia.org/wikipedia/commons/9/90/Putin_animals.jpeg") center/cover no-repeat;
+      z-index: 0;
+    }
+    body.bear-bg::after { opacity: 1; }
+    .music-overlay {
+      position: fixed;
+      inset: 0;
+      z-index: 2;
+      pointer-events: none;
+      opacity: 0;
+      transition: opacity 0.28s ease;
+      background: linear-gradient(
+        to bottom,
+        rgba(255,255,255,0.9) 0 33.33%,
+        rgba(37,99,235,0.88) 33.33% 66.66%,
+        rgba(220,38,38,0.9) 66.66% 100%
+      );
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+    .music-overlay-emblem {
+      width: min(320px, 48vw);
+      max-height: 62vh;
+      object-fit: contain;
+      display: block;
+      filter: drop-shadow(0 10px 24px rgba(0,0,0,0.45));
+      transform: scale(0.96);
+      transition: transform 0.28s ease;
+    }
+    .music-overlay-fallback {
+      display: none;
+      padding: 12px 18px;
+      border: 2px solid rgba(255,255,255,0.8);
+      border-radius: 12px;
+      background: rgba(0,0,0,0.35);
+      color: #fff;
+      font-weight: 800;
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+    }
+    body.music-mode .music-overlay { opacity: 1; }
+    body.music-mode .music-overlay-emblem { transform: scale(1); }
+    .shell {
+      position: relative;
+      z-index: 1;
+      width: 100%;
+      max-width: 1100px;
+      background: linear-gradient(135deg, rgba(41,37,36,0.98), rgba(28,25,23,0.99));
+      border-radius: 26px;
+      border: 1px solid rgba(120,113,108,0.25);
+      box-shadow: var(--shadow);
+      overflow: hidden;
+      backdrop-filter: blur(26px);
+      transition: opacity 0.28s ease, transform 0.28s ease;
+    }
+    body.bear-focus .shell {
+      opacity: 0;
+      transform: scale(0.985);
+      pointer-events: none;
+    }
+    body.music-focus .content,
+    body.music-focus .footer {
+      opacity: 0;
+      visibility: hidden;
+      transition: opacity 0.2s ease;
+    }
+    .shell-header {
+      padding: 14px 18px;
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      border-bottom: 1px solid rgba(120,113,108,0.3);
+      background: linear-gradient(90deg, rgba(120,113,108,0.12) 0, rgba(41,37,36,0.98) 40%);
+    }
+    .dot {
+      position: relative;
+      width: 10px;
+      height: 10px;
+      border-radius: 999px;
+      background: #ffffff;
+      box-shadow: 0 0 0 1px rgba(15,23,42,0.5);
+      cursor: pointer;
+    }
+    .dot::before {
+      content: "";
+      position: absolute;
+      inset: -8px;
+      border-radius: 999px;
+    }
+    .dot:nth-child(2) { background: #2563eb; }
+    .dot:nth-child(3) { background: #dc2626; }
+    .shell-title { margin-left: 8px; font-size: 13px; letter-spacing: 0.08em; text-transform: uppercase; color: var(--muted); flex: 1; }
+    .theme-toggle {
+      display: inline-flex; align-items: center; gap: 6px; padding: 3px 9px; border-radius: 999px;
+      border: 1px solid rgba(120,113,108,0.5); font-size: 11px; text-transform: uppercase; letter-spacing: 0.09em;
+      color: var(--muted); background: rgba(38,35,33,0.9); cursor: pointer;
+    }
+    .theme-toggle-indicator { width: 9px; height: 9px; border-radius: 999px; background: linear-gradient(135deg, #facc15, #f97316); box-shadow: 0 0 10px rgba(250,204,21,0.9); }
+    .theme-light .theme-toggle { background: #f9fafb; color: #4b5563; }
+    .theme-light .theme-toggle-indicator { background: linear-gradient(135deg, #334155, #475569); box-shadow: 0 0 10px rgba(71,85,105,0.5); }
+
+    .content { padding: 24px 24px 30px; }
+    @media (min-width: 900px) { .content { padding: 30px 40px 40px; } }
+
+    h1, h2, h3 { margin: 0 0 8px; font-weight: 650; letter-spacing: 0.03em; text-transform: uppercase; }
+    h1 { font-size: clamp(22px, 3vw, 28px); }
+    h2 { font-size: 17px; margin-top: 26px; }
+    h3 { font-size: 15px; margin-top: 20px; border-bottom: 1px solid rgba(120,113,108,0.25); padding-bottom: 8px; margin-bottom: 10px; }
+    p { margin: 4px 0 10px; color: var(--muted); font-size: 14px; line-height: 1.6; }
+
+    .badge {
+      display: inline-flex; align-items: center; gap: 6px; padding: 3px 10px; border-radius: 999px;
+      background: rgba(38,35,33,0.9); border: 1px solid rgba(120,113,108,0.35); color: var(--muted);
+      font-size: 11px; text-transform: uppercase; letter-spacing: 0.12em; margin-bottom: 10px;
+    }
+    .badge-dot { width: 8px; height: 8px; border-radius: 999px; background: var(--accent); box-shadow: 0 0 10px rgba(168,162,158,0.4); }
+    .lead { font-size: 14px; color: var(--text); margin-bottom: 14px; }
+
+    .tabs { display: flex; flex-wrap: wrap; gap: 10px; margin: 16px 0 0; padding-bottom: 14px; border-bottom: 1px solid var(--border); }
+    .tab-btn {
+      border-radius: 10px; border: 1px solid rgba(120,113,108,0.4); padding: 10px 16px; font-size: 12px;
+      text-transform: uppercase; letter-spacing: 0.05em; background: rgba(38,35,33,0.9); color: var(--muted);
+      cursor: pointer; transition: background 0.2s, border-color 0.2s, color 0.2s, transform 0.1s, box-shadow 0.2s;
+      border-left-width: 3px;
+    }
+    .tab-btn:hover { color: var(--text); transform: translateY(-1px); box-shadow: 0 4px 12px rgba(0,0,0,0.25); }
+    .tab-btn[data-tab="reglament"]   { border-left-color: #a8a29e; }
+    .tab-btn[data-tab="reglament"]:hover,
+    .tab-btn[data-tab="reglament"].active { background: rgba(68,64,60,0.95); border-color: rgba(168,162,158,0.5); color: var(--text); }
+    .tab-btn[data-tab="duties"]       { border-left-color: #78716c; }
+    .tab-btn[data-tab="duties"]:hover,
+    .tab-btn[data-tab="duties"].active { background: rgba(68,64,60,0.95); border-color: rgba(120,113,108,0.6); color: var(--text); }
+    .tab-btn[data-tab="penalties"]    { border-left-color: #57534e; }
+    .tab-btn[data-tab="penalties"]:hover,
+    .tab-btn[data-tab="penalties"].active { background: rgba(68,64,60,0.95); border-color: rgba(87,83,78,0.6); color: var(--text); }
+    .tab-btn[data-tab="info"]         { border-left-color: #78716c; }
+    .tab-btn[data-tab="info"]:hover,
+    .tab-btn[data-tab="info"].active { background: rgba(68,64,60,0.95); border-color: rgba(120,113,108,0.5); color: var(--text); }
+    .theme-light .tab-btn { background: #f8fafc; color: #475569; border-color: #e2e8f0; }
+    .theme-light .tab-btn[data-tab="reglament"]   { border-left-color: #94a3b8; }
+    .theme-light .tab-btn[data-tab="reglament"]:hover,
+    .theme-light .tab-btn[data-tab="reglament"].active { background: #f1f5f9; border-color: #94a3b8; color: #0f172a; box-shadow: 0 0 0 1px rgba(148,163,184,0.3); }
+    .theme-light .tab-btn[data-tab="duties"]       { border-left-color: #64748b; }
+    .theme-light .tab-btn[data-tab="duties"]:hover,
+    .theme-light .tab-btn[data-tab="duties"].active { background: #e2e8f0; border-color: #64748b; color: #0f172a; box-shadow: 0 0 0 1px rgba(100,116,139,0.25); }
+    .theme-light .tab-btn[data-tab="penalties"]    { border-left-color: #475569; }
+    .theme-light .tab-btn[data-tab="penalties"]:hover,
+    .theme-light .tab-btn[data-tab="penalties"].active { background: #e2e8f0; border-color: #475569; color: #0f172a; box-shadow: 0 0 0 1px rgba(71,85,105,0.2); }
+    .theme-light .tab-btn[data-tab="info"]         { border-left-color: #64748b; }
+    .theme-light .tab-btn[data-tab="info"]:hover,
+    .theme-light .tab-btn[data-tab="info"].active { background: #f1f5f9; border-color: #64748b; color: #0f172a; box-shadow: 0 0 0 1px rgba(100,116,139,0.2); }
+
+    .tab-panel { display: none; margin-top: 20px; }
+    .tab-panel.active { display: block; animation: tabFade 0.2s ease; }
+    @keyframes tabFade { from { opacity: 0.6; } to { opacity: 1; } }
+
+    .card {
+      border-radius: var(--radius-lg); border: 1px solid var(--border);
+      background: rgba(23,20,18,0.85);
+      padding: 18px 18px 16px; box-shadow: 0 8px 24px rgba(0,0,0,0.35), inset 0 1px 0 rgba(255,255,255,0.03);
+      margin-bottom: 18px;
+    }
+    .card h3 {
+      margin-top: 0;
+      padding: 10px 12px;
+      margin: -18px -18px 14px -18px;
+      border-radius: var(--radius-lg) var(--radius-lg) 0 0;
+      background: rgba(0,0,0,0.25);
+      border-bottom: 1px solid var(--border);
+    }
+    .theme-light .card {
+      background: #fff;
+      border-color: #e7e5e4;
+      box-shadow: 0 8px 24px rgba(0,0,0,0.08);
+    }
+    .theme-light .card h3 {
+      background: #f5f5f4;
+      border-bottom-color: #e7e5e4;
+      color: #1c1917;
+    }
+    .key { color: var(--accent); font-weight: 600; }
+    .warn { color: #f59e0b; font-weight: 600; }
+    .danger { color: var(--danger); font-weight: 600; }
+    .duration-highlight { color: #22d3ee; font-weight: 700; text-shadow: none; }
+    .theme-light .duration-highlight { color: #0e7490; text-shadow: none; }
+    strong {
+      font-weight: 700;
+      text-shadow: none;
+    }
+    .tab-panel[data-panel="reglament"] strong { color: #fde047; }
+    .tab-panel[data-panel="duties"] strong { color: #86efac; }
+    .tab-panel[data-panel="penalties"] strong { color: #f87171; }
+    .tab-panel[data-panel="info"] strong { color: #93c5fd; }
+    .tab-panel strong .danger,
+    .tab-panel .danger strong,
+    .tab-panel strong .warn,
+    .tab-panel .warn strong,
+    .tab-panel strong .key,
+    .tab-panel .key strong {
+      color: inherit;
+    }
+    .theme-light strong { text-shadow: none; }
+    .theme-light .tab-panel[data-panel="reglament"] strong { color: #ca8a04; }
+    .theme-light .tab-panel[data-panel="duties"] strong { color: #166534; }
+    .theme-light .tab-panel[data-panel="penalties"] strong { color: #b91c1c; }
+    .theme-light .tab-panel[data-panel="info"] strong { color: #1d4ed8; }
+    .color-legend {
+      margin: 10px 0 2px;
+      padding: 10px 12px;
+      border: 1px solid var(--border);
+      border-radius: var(--radius-sm);
+      background: rgba(38,35,33,0.55);
+      display: flex;
+      flex-wrap: wrap;
+      gap: 10px 14px;
+      font-size: 12px;
+      color: var(--muted);
+    }
+    .color-legend span { white-space: nowrap; }
+    .legend-reglament { color: #fde047; font-weight: 700; }
+    .legend-duties { color: #86efac; font-weight: 700; }
+    .legend-penalties { color: #f87171; font-weight: 700; }
+    .legend-info { color: #93c5fd; font-weight: 700; }
+    .legend-duration { color: #22d3ee; font-weight: 700; }
+    .info-highlight { color: #93c5fd; font-weight: 700; }
+    .theme-light .color-legend { background: #f8fafc; border-color: #cbd5e1; }
+    .theme-light .legend-reglament { color: #ca8a04; }
+    .theme-light .legend-duties { color: #166534; }
+    .theme-light .legend-penalties { color: #b91c1c; }
+    .theme-light .legend-info { color: #1d4ed8; }
+    .theme-light .legend-duration { color: #0e7490; }
+    .theme-light .info-highlight { color: #1d4ed8; }
+    .accent-border { border-left: 3px solid var(--accent); padding-left: 10px; margin: 10px 0; }
+    ul, ol { margin: 4px 0 10px; padding-left: 20px; color: var(--muted); font-size: 14px; line-height: 1.6; }
+    li { margin-bottom: 4px; }
+    code { font-family: ui-monospace, Menlo, Monaco, Consolas, monospace; font-size: 12px; padding: 2px 5px; border-radius: 6px; background: rgba(38,35,33,0.9); color: #ffffff; border: 1px solid var(--border); }
+    table { width: 100%; border-collapse: collapse; margin-top: 8px; font-size: 13px; border-radius: var(--radius-sm); overflow: hidden; background: rgba(23,20,18,0.6); }
+    th, td { padding: 8px 10px; border-bottom: 1px solid var(--border); text-align: left; }
+    th { background: rgba(38,35,33,0.95); font-weight: 600; font-size: 12px; text-transform: uppercase; letter-spacing: 0.08em; color: var(--muted); }
+    tr:nth-child(even) td { background: rgba(38,35,33,0.5); }
+    tr:hover td { background: rgba(120,113,108,0.15); }
+    .footer { margin-top: 18px; border-top: 1px dashed rgba(75,85,99,0.7); padding-top: 10px; font-size: 11px; color: var(--muted); }
+
+    .card-link-block .roll-link {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 12px;
+      margin: 14px 0 10px;
+      padding: 16px 20px;
+      border-radius: var(--radius-sm);
+      border: 2px solid var(--accent);
+      background: rgba(168,162,158,0.18);
+      text-decoration: none;
+      color: var(--text);
+      transition: background 0.2s, border-color 0.2s, transform 0.15s, box-shadow 0.2s;
+      box-shadow: 0 0 0 1px rgba(0,0,0,0.2);
+    }
+    .card-link-block .roll-link:hover {
+      background: rgba(168,162,158,0.3);
+      border-color: #d6d3d1;
+      color: var(--text);
+      transform: translateY(-2px);
+      box-shadow: 0 6px 20px rgba(0,0,0,0.35);
+    }
+    .roll-link-text { flex: 1; }
+    .roll-link-title { display: block; font-weight: 700; font-size: 15px; margin-bottom: 4px; color: var(--text); }
+    .roll-link-url { font-size: 12px; color: var(--accent); }
+    .roll-link-arrow {
+      flex-shrink: 0;
+      font-size: 18px;
+      font-weight: 700;
+      color: var(--accent);
+    }
+    .roll-link-note { font-size: 12px; color: var(--muted); margin-top: 8px; }
+    .theme-light .card-link-block .roll-link {
+      background: #e7e5e4;
+      border-color: #78716c;
+      color: #1c1917;
+      box-shadow: 0 2px 8px rgba(0,0,0,0.08);
+    }
+    .theme-light .card-link-block .roll-link:hover {
+      background: #d6d3d1;
+      border-color: #57534e;
+      color: #0c0a09;
+      box-shadow: 0 6px 16px rgba(0,0,0,0.12);
+    }
+    .theme-light .roll-link-title { color: #1c1917; }
+    .theme-light .roll-link-url { color: #57534e; }
+    .theme-light .roll-link-arrow { color: #57534e; }
+  </style>
+</head>
+<body>
+  <main class="shell">
+    <header class="shell-header">
+      <div class="dot" id="bearDot"></div><div class="dot" id="tricolorDot"></div><div class="dot" id="musicDot"></div>
+      <div class="shell-title">lorecharacter / Yufu.Su</div>
+      <button id="themeToggle" class="theme-toggle" type="button">
+        <span class="theme-toggle-indicator"></span>
+        <span id="themeToggleLabel">Тёмная тема</span>
+      </button>
+    </header>
+    <div class="content">
+      <div class="badge"><span class="badge-dot"></span><span>Лорные персонажи</span></div>
+      <h1>Регламент лорников</h1>
+      <p class="lead">Свод правил и регламентов для лорных персонажей. Выберите вкладку.</p>
+      <div class="color-legend">
+        <span><span class="legend-reglament">Жёлтый</span> — регламент</span>
+        <span><span class="legend-duties">Зелёный</span> — обязанности</span>
+        <span><span class="legend-penalties">Красный</span> — санкции</span>
+        <span><span class="legend-info">Синий</span> — информация</span>
+        <span><span class="legend-duration">Бирюзовый</span> — сроки и периоды</span>
+      </div>
+
+      <div class="tabs">
+        <button type="button" class="tab-btn active" data-tab="reglament">Регламент лорников</button>
+        <button type="button" class="tab-btn" data-tab="duties">Обязанности лорников</button>
+        <button type="button" class="tab-btn" data-tab="penalties">Взыскания лорников</button>
+        <button type="button" class="tab-btn" data-tab="info">Информация лорников</button>
+      </div>
+
+      <!-- Регламент лорников -->
+      <div class="tab-panel active" data-panel="reglament">
+        <h2>1. Регламент лорных персонажей</h2>
+
+        <article class="card">
+          <h3>Испытательный срок</h3>
+          <ul>
+            <li>Испытательный срок длится <span class="duration-highlight">две недели</span> и начинается с момента вашего прохождения на лорного персонажа</li>
+            <li>В случае получения выговора на испытательном сроке вы получаете <span class="danger">снятие и перм ЧС</span> лорных персонажей</li>
+            <li>Взятие отпуска на испытательном сроке продлевает время его действия. Соотношение <span class="key">1 к 1</span></li>
+          </ul>
+          <p class="accent-border"><strong>Пояснение:</strong> 1 день отпуска = +1 день к испытательному сроку.</p>
+        </article>
+
+        <article class="card card-link-block">
+          <h3>Команда /roll и статус no-roll</h3>
+          <p>Полный регламент по команде /roll, статусу no-roll для Хашир, Лун и лидеров, правилам для главных героев, примерам и таблице рангов с бонусами — на отдельном сайте системы бросков.</p>
+          <a href="https://rollsystem.netlify.app" target="_blank" rel="noopener noreferrer" class="roll-link">
+            <span class="roll-link-text">
+              <span class="roll-link-title">Система /roll — Клинок, рассекающий демонов</span>
+              <span class="roll-link-url">rollsystem.netlify.app</span>
+            </span>
+            <span class="roll-link-arrow">→</span>
+          </a>
+          <p class="roll-link-note">Там же: диапазон 0–100, бонусы за ранг, no roll для Столпов и Лун, интерактивные панели и таблица «Кто кидает /roll».</p>
+        </article>
+
+        <article class="card">
+          <h3>Правила статуса</h3>
+          <ul>
+            <li>Статус не означает вседозволенности</li>
+            <li>Любые действия должны быть логичными, соответствовать канону и правилам RP</li>
+            <li>За использование статуса для нелогичных, нереалистичных или нарушающих баланс действий может последовать наказание</li>
+            <li><span class="danger">Запрещено</span> злоупотреблять командой /roll: в случае двух неудач подряд Вы обязаны ждать 3 минуты, прежде чем вновь использовать команду</li>
+          </ul>
+          <p class="accent-border"><strong>Напоминание:</strong> /roll — это инструмент для честного и справедливого определения исхода, а не способ избежать логики и отыгровки. Всегда сохраняйте роль, уважение к логике мира и последовательность действий.</p>
+        </article>
+
+        <article class="card">
+          <h3>Регламент соблюдения ERP логики</h3>
+          <ul>
+            <li>Соблюдаем канон пары (Обанай - Мицури, Танджиро - Канао, Аой - Иноске, Зеницу - Незуко, Тенген - его жены и тд; <strong>Исключение:</strong> Вы не обладаете канон парой, вы имеете право развивать отношения с обычным игроком.)</li>
+            <li>Всем лорникам, которым по РП <span class="key">меньше 14 лет</span> <span class="danger">запрет на ERP</span></li>
+            <li>ЕРП только с противоположным полом</li>
+            <li>Соблюдать логику развития ваших отношений</li>
+            <li>Запрещено доводить ERP до стадии заведения детей и их рождения (секс и ничего больше, без роста населения на юфусе)</li>
+          </ul>
+        </article>
+
+        <article class="card">
+          <h3>Общие положения</h3>
+          <ul>
+            <li><strong>1.</strong> Данный регламент обязателен к исполнению всеми наборными персонажами</li>
+            <li><strong>1.1.</strong> Наборные лорные персонажи второго сервера не могут стоять одновременно на первом сервере на наборном лорном персонаже, а также это работает наоборот</li>
+            <li><strong>1.2.</strong> В случае рецидива нарушений мера наказаний увеличивается</li>
+            <li><strong>1.3.</strong> Каждый лорный персонаж обязан строго и чётко выполнять поставленные РП составом указания, связанные с проектом</li>
+            <li><strong>1.4.</strong> Каждый лорный персонаж обязан строго и чётко выполнять поставленные лидером фракции обязанности и указания по ней</li>
+            <li><strong>1.5.</strong> Каждый наборный лорный персонаж обязан строго и чётко выполнять расписанные обязанности</li>
+            <li><strong>1.6.</strong> Каждый лорный персонаж обязан в полной мере отыгрывать свою квоту по онлайну. <span class="danger">Категорически запрещено</span> отыгрывать квоту в AFK или выполнением какой-либо бесполезной деятельностью</li>
+            <li><strong>1.7.</strong> Каждый лорный персонаж обязан соблюдать действующие правила дискорд-сервера, а также проекта; независимо, где будет выдано наказание — лорник сможет получить предупреждение или выговор</li>
+            <li><strong>1.8.</strong> Квота лорных персонажей учитывается с <span class="key">16:00 до 00:00 по МСК</span></li>
+            <li><strong>1.9.</strong> Запрещена махинация с правилами внутреннего регламента лорников, так и активный поиск дыр в нём</li>
+            <li><strong>1.10.</strong> Столпы/Луны обязуются контролировать собственный состав; в это входит: если вы замечаете массовые нарушения правил — вы должны предотвратить их беседой/пресечением. При массовых нарушениях устава, массовом неадекватном поведении также считается данный пункт</li>
+            <li><strong>1.11.</strong> Запрещено видоизменять дискорд-сервер без оповещения РП-персонала и высшей администрации сервера, начиная с заместителя куратора. Если изменение будет полагать собой нарушение сервера — состав администрации имеет право выдать наказание в зависимости от нарушения</li>
+            <li><strong>1.12.</strong> Запрещено перемещаться между двумя фракциями, если у Вас есть лорный персонаж. <strong>Исключение:</strong> второстепенные персонажи</li>
+            <li><strong>1.13.</strong> <strong>Право на наказание.</strong> РП состав обладает правом выносить наказания лорным персонажам, опираясь на логику лора Клинка, правил сервера и положения регламента</li>
+            <li><strong>1.14.</strong> <strong>Условное применение наказаний.</strong> Наказания применяются по усмотрению РП состава с учётом тяжести нарушения, контекста ситуации и предшествующего поведения персонажа</li>
+            <li><strong>1.15.</strong> <strong>Мониторинг ситуации.</strong> РП состав осуществляет мониторинг ситуации на сервере, активности лорных персонажей и соблюдения ими обязанностей в рамках регламента, а также РП части сервера</li>
+            <li><strong>1.16.</strong> <strong>Вмешательство в дела фракций.</strong> РП состав вправе вмешаться в дела любой фракции (истребители/демоны), если того требуют обстоятельства, правила проекта или необходимость разрешения конфликтных ситуаций</li>
+            <li><strong>1.17.</strong> <strong>Обнуление итогов события.</strong> РП состав имеет право обнулить или уточнить итоги ивента, события, чтобы не допустить несоответствия с тайм-лайном сюжета проекта</li>
+            <li><strong>1.18.</strong> <strong>Аннулирование отчётности.</strong> РП состав обладает правом аннулировать отчётность по аспектам подделки, обмана или некорректного заполнения; в таком случае квота за соответствующий период может быть не засчитана или пересмотрена</li>
+            <li><strong>1.19.</strong> <strong>Обязательность решений.</strong> Решения РП состава по наказаниям и вмешательству в дела фракций обязательны к исполнению лидерами фракций, столпами, лунами и главными героями</li>
+            <li><strong>1.20.</strong> <strong>Разрешение споров.</strong> При возникновении споров между лорными персонажами или фракциями окончательное решение по вопросам, связанным с лором и регламентом, принимает РП состав</li>
+            <li><strong>1.21.</strong> <strong>Право на запрос информации.</strong> РП состав вправе запрашивать у лорных персонажей пояснения, скриншоты и иную информацию для проверки соблюдения регламента и правил проекта</li>
+            <li><strong>1.22.</strong> <strong>Проверка отчётности.</strong> РП состав проводит выборочную или полную проверку отчётности лорных персонажей; при выявлении несоответствий, дублирования или сомнительных скриншотов отчётность может быть частично или полностью не засчитана</li>
+            <li><strong>1.23.</strong> <strong>Временные ограничения.</strong> РП состав имеет право временно ограничить права лорного персонажа (в том числе на вторую профессию) на время выяснения обстоятельств</li>
+            <li><strong>1.24.</strong> <strong>Координация с лидерами.</strong> РП состав вправе давать обязательные к исполнению указания лидерам фракций по вопросам порядка, лора и отчётности; неисполнение таких указаний рассматривается как нарушение регламента</li>
+            <li><strong>1.25.</strong> <strong>Приоритет регламента.</strong> В вопросах, касающихся обязанностей и ограничений лорных персонажей, положения настоящего регламента и решения РП состава имеют приоритет над внутренними уставами фракций, если последние им противоречат</li>
+            <li><strong>1.26.</strong> <strong>Предотвращение конфликтов интересов.</strong> РП состав при принятии решений в отношении лорных персонажей обязан исключать конфликт интересов; при его возникновении вопрос передаётся другому представителю РП состава или вышестоящему по должности</li>
+            <li><strong>1.27.</strong> <strong>Восстановление персонажа в противоположной фракции.</strong> Если Вы использовали второй слот во фракции (пример: демоны), то Вы не можете восстановить своего персонажа в истребителях: ни ранг, ни должность. Однако, если Вы не использовали второй слот или делали это для теста, то у Вас имеется возможность восстановить своего персонажа после снятия с лорника</li>
+          </ul>
+        </article>
+      </div>
+
+      <!-- Обязанности лорников -->
+      <div class="tab-panel" data-panel="duties">
+        <h2>2. Обязанности лорных персонажей</h2>
+
+        <article class="card">
+          <h3>Prime-Time для Столпов, Лун и Главных героев</h3>
+          <ul>
+            <li>Ежедневно <span class="duration-highlight">16:00–00:00</span> — присутствие на сервере <span class="duration-highlight">90 минут</span> активного времени</li>
+            <li>Столпы и Луны: активность на максимуме, AFK с оповещением в OOC/Asay — макс. <span class="duration-highlight">30 минут</span></li>
+            <li>Главные герои — активность в полном масштабе для игроков</li>
+            <li>Ежедневно: скриншот в ветку онлайна, отчётность по критериям информации лун/столпов/ГГ</li>
+          </ul>
+        </article>
+
+        <article class="card">
+          <h3>Лидеры фракций</h3>
+          <p><strong>Основные задачи:</strong> порядок в фракции, активности, устав и его модернизация, помощь игрокам, решение споров, задачи от РП состава.</p>
+          <p><strong>Ежемесячно:</strong></p>
+          <ol>
+            <li>Помощь в межфракционных событиях</li>
+            <li>Контроль фракционных событий</li>
+            <li>Отчёт по обязанностям в конце месяца лично РП куратору</li>
+          </ol>
+          <p class="accent-border">Квота — допустимая деятельность (ивенты, тренировки, РП). <span class="danger">Запрещено</span> фабриковать отчёты. Участие в чужих мероприятиях — 50%.</p>
+        </article>
+
+        <article class="card">
+          <h3>Столпы и демоны 12 лун</h3>
+          <p><strong>Основные задачи:</strong> порядок, активности, работа с составом, помощь игрокам, задачи от РП состава и лидера, актуальный канал «информации» по дыханию/отряду.</p>
+          <p><strong>Раз в две недели:</strong></p>
+          <ol>
+            <li>Участие в межфракционном/глобальном РП событии раз в месяц или фракционное событие для <span class="info-highlight">8+ человек</span></li>
+            <li>Три события для всей фракции</li>
+            <li>Квота отчётности: <span class="info-highlight">18 скринов</span> за две недели (события + активность отдельно)</li>
+            <li>Отправка отчётов по истечении двух недель в специальный канал Discord</li>
+          </ol>
+          <p class="accent-border">Запрещено фабриковать отчётность. Чужие мероприятия — 50%.</p>
+        </article>
+
+        <article class="card">
+          <h3>Главные герои</h3>
+          <p><strong>Задачи:</strong> создания активностей и РП.</p>
+          <p><strong>Раз в две недели:</strong> <span class="info-highlight">18 скринов</span> отчётности, отправка отчётов в канал. Те же правила по допустимой деятельности и запрету фабрикации.</p>
+        </article>
+
+        <article class="card">
+          <h3>Вторые профессии</h3>
+          <p>Только для лун/столпов.</p>
+          <p><strong>Истребители:</strong> столпы могут вступать в любое открытое дыхание или закрытое с полноценным вступлением (искл. донатные). Одобрение — высшая администрация.</p>
+          <p><strong>Демоны:</strong> луны — любой отряд или профа не выше демона низшей магии крови (искл. донатные отряды). Одобрение — высшая администрация.</p>
+          <p class="accent-border"><span class="key">Важно:</span> вторая профессия только после отыгровки основной квоты. Отпуск = полное отсутствие. При выговоре — нельзя переключаться на вторую профу (искл. донат модель/лорник).</p>
+        </article>
+
+        <article class="card">
+          <h3>Правила поведения</h3>
+          <ul>
+            <li><strong>2.</strong> Запрещено злоупотребление полномочиями, «душка»/«слив» игроков</li>
+            <li><strong>2.1.</strong> Пример другим: без грубости вне РП, качественный отыгрыш</li>
+            <li><strong>2.2.</strong> Конфликты между лорниками — через РП состав. Запрещено NonRP</li>
+            <li><strong>2.3.</strong> Макс. выговоры во фракции → выговор на лорного персонажа</li>
+            <li><strong>2.4.</strong> Запрещено провоцировать OOC-конфликты и переносить личные споры в игровой процесс</li>
+            <li><strong>2.5.</strong> Обязателен уважительный тон общения в отношении игроков и состава проекта</li>
+            <li><strong>2.6.</strong> Все решения РП состава и лидера фракции обязательны к исполнению в рамках регламента</li>
+          </ul>
+        </article>
+
+        <article class="card">
+          <h3>Правила отчетности наборных лорных персонажей</h3>
+          <ul>
+            <li><strong>3.</strong> Отчётность строго по концепту, в установленное время. <span class="danger">Запрещено</span> фабриковать, закрывать всю отчётность за <span class="duration-highlight">3 дня</span>, использовать обработанные скрины</li>
+            <li><strong>3.1.</strong> С одной ситуации максимум <span class="info-highlight">2 скрина</span></li>
+            <li><strong>3.2.</strong> КД между скринами — <span class="duration-highlight">3+ минут</span></li>
+            <li><strong>3.3.</strong> На каждом скрине обязателен полный HUD</li>
+            <li><strong>3.4.</strong> На каждом скрине должно быть видно время</li>
+            <li><strong>3.5.</strong> На каждом скрине должен присутствовать Ваш персонаж</li>
+            <li><strong>3.6.</strong> Максимум скринов на активность в Discord — <span class="info-highlight">2</span></li>
+            <li><strong>3.7.</strong> Максимум скринов на мероприятия — <span class="info-highlight">3</span></li>
+            <li><strong>3.8.</strong> Максимум скринов на захваты — <span class="info-highlight">2</span></li>
+            <li><strong>3.9.</strong> Ивенты/события отряда/дыхания требуют предварительного оповещения в Discord</li>
+            <li><strong>3.10.</strong> Отчёт по обязательным ивентам: <span class="info-highlight">3 скрина</span> (оповещение, сбор/инструктаж, процесс/завершение)</li>
+            <li><strong>3.11.</strong> Мероприятие/тренировка учитывается как <span class="info-highlight">0.5</span> за троих участников</li>
+            <li><strong>3.12.</strong> Мероприятие/тренировка учитывается как <span class="info-highlight">1</span> за двоих участников</li>
+            <li><strong>3.13.</strong> При выявлении подделки или нарушений оформления отчётность может быть аннулирована РП составом</li>
+          </ul>
+        </article>
+
+        <article class="card">
+          <h3>AFK на лорных персонажах</h3>
+          <ul>
+            <li><strong>4.</strong> Макс. общее время в AFK — <span class="duration-highlight">15 минут</span></li>
+            <li><strong>4.1.</strong> Перед AFK — оповестить в ООС чат, на сколько уходите</li>
+            <li><strong>4.2.</strong> <span class="danger">Запрещено</span> уходить в AFK на видных местах</li>
+          </ul>
+        </article>
+      </div>
+
+      <!-- Взыскания -->
+      <div class="tab-panel" data-panel="penalties">
+        <h2>3. Взыскания для лорных персонажей</h2>
+
+        <article class="card">
+          <h3>Регламент взысканий</h3>
+          <p><strong>Выговор</strong> — за нарушение правил проекта, регламентов лорников или невыполнение квот.</p>
+          <ul>
+            <li><span class="key">Обычные выговоры</span> — стандартные нарушения</li>
+            <li><span class="warn">Перманентные выговоры</span> — серьёзные нарушения или рецидив. Отработка через <span class="duration-highlight">2 месяца</span> при хорошем поведении</li>
+          </ul>
+          <p><strong>Санкции за обычный выговор:</strong> запрет второй профессии после квоты; норма онлайна — <span class="duration-highlight">2 часа</span>.</p>
+          <p><strong>Предупреждения</strong> — за незначительные нарушения. Слетают через <span class="duration-highlight">неделю</span>, санкций нет.</p>
+        </article>
+
+        <article class="card">
+          <h3>Отработка взысканий</h3>
+          <ul>
+            <li>Отработка выговора — задание от РП состава, возможно через <span class="key">3 дня</span> после получения</li>
+            <li>Предупреждения снимаются автоматически через неделю</li>
+            <li>Перманентные выговоры — отработка через <span class="key">3 месяца</span> при одобрении РП-куратора</li>
+            <li><span class="warn">Срок на отработку выговора — неделя</span>, иначе он становится перманентным</li>
+            <li>Активный отпуск: +1 день (или по числу дней отпуска) к времени на отработку. Абуз отпуска → перм выговор, отработка только через <span class="key">4 месяца</span></li>
+          </ul>
+        </article>
+
+        <article class="card">
+          <h3>Регламент ЧС лорников</h3>
+          <p>При снятии — ЧС от 5 дней до перманента в зависимости от причины.</p>
+          <p><strong>1. Снятие после испытательного срока:</strong> сразу после срока — <span class="danger">ЧС <span class="duration-highlight">1 месяц</span></span>; через время без выговоров — <span class="danger">ЧС <span class="duration-highlight">5 дней</span></span>.</p>
+          <p><strong>2. Снятие с выговорами:</strong> <span class="info-highlight">1</span> выговор = <span class="danger">ЧС <span class="duration-highlight">3 мес.</span></span>; <span class="info-highlight">2</span> = <span class="danger"><span class="duration-highlight">6 мес.</span></span>; <span class="info-highlight">3</span> = <span class="danger">перм ЧС</span>.</p>
+          <p><strong>3. Снятие без двухнедельного отчёта:</strong> на испытательном = <span class="danger">перм ЧС</span>; с <span class="info-highlight">1</span> выговором = от <span class="duration-highlight">3 мес.</span>; с <span class="info-highlight">2</span> = от <span class="duration-highlight">6 мес.</span>.</p>
+        </article>
+
+        <article class="card">
+          <h3>Отпуска</h3>
+          <ul>
+            <li>Макс. отпуск <span class="duration-highlight">1 неделя</span>; КД на отпуск — <span class="duration-highlight">3 недели</span> (искл. семейные обстоятельства)</li>
+            <li>Норма онлайна только в прайм-тайм. Не успели — отпуск «отдых/устал» принимается до <span class="duration-highlight">18:30</span>, после отклоняется</li>
+            <li>Отпуск = полное отсутствие на сервере. Заход на любой из двух серверов → аннулирование отпуска</li>
+            <li>Отпуск скидывать в ветку лорного персонажа</li>
+            <li><span class="danger">Важно:</span> отпуск «отдых», но играете на первом для квоты, или «болеете» и играете — отпуск аннулируется + наказание за квоту</li>
+          </ul>
+        </article>
+      </div>
+
+      <!-- Информация -->
+      <div class="tab-panel" data-panel="info">
+        <h2>4. Информация для лорных персонажей</h2>
+
+        <article class="card">
+          <h3>Общая информация</h3>
+          <ul>
+            <li>Вопросы по лорникам — через РП-персонал</li>
+            <li>Отчётность ежедневно в ветки Discord</li>
+            <li>Следить за объявлениями в официальном Discord проекта</li>
+          </ul>
+        </article>
+
+        <article class="card">
+          <h3>Временные рамки</h3>
+          <p>Действие — промежуток <span class="key">перед/после горы Натагума</span>. Учитывать при отыгрыше возможностей персонажей.</p>
+          <p>Главные герои не в пиковой силе, особенно на испытательном сроке. По мере получения статуса «киноэ» положение может меняться. Не ссылаться на арки манги — у нас не та арка. Учитывать механику сервера (например, Танджиро с «танцем бога огня», Незуко с магией крови и берсерком).</p>
+        </article>
+
+        <article class="card">
+          <h3>Отвечающие за лорников</h3>
+          <ul>
+            <li>РП Куратор</li>
+            <li>Деп. РП Куратор (демоны)</li>
+            <li>Деп. РП Куратор (истребители)</li>
+          </ul>
+        </article>
+      </div>
+
+      <footer class="footer">
+        © 2025 Лорники Yufu.Su #2 | Все права защищены · Версия 2.0
+      </footer>
+    </div>
+  </main>
+  <div class="music-overlay" aria-hidden="true">
+    <img
+      class="music-overlay-emblem"
+      alt="Герб Российской Федерации"
+      src="https://upload.wikimedia.org/wikipedia/commons/f/f2/Coat_of_Arms_of_the_Russian_Federation.svg"
+      onerror="this.style.display='none'; var f=document.getElementById('emblemFallback'); if(f) f.style.display='block';"
+    />
+    <div id="emblemFallback" class="music-overlay-fallback">Герб РФ</div>
+  </div>
+  <audio id="bearAudio" preload="auto" src="music.mp3"></audio>
+  <script>
+    (function initTheme() {
+      try {
+        var s = window.localStorage && window.localStorage.getItem('lore_theme');
+        if (s === 'light') document.documentElement.classList.add('theme-light');
+      } catch (e) {}
+      var t = document.getElementById('themeToggle');
+      var l = document.getElementById('themeToggleLabel');
+      function sync() { if (l) l.textContent = document.documentElement.classList.contains('theme-light') ? 'Светлая тема' : 'Тёмная тема'; }
+      sync();
+      if (t) t.addEventListener('click', function() {
+        var is = document.documentElement.classList.toggle('theme-light');
+        try { if (window.localStorage) window.localStorage.setItem('lore_theme', is ? 'light' : 'dark'); } catch (e) {}
+        sync();
+      });
+    })();
+    (function initTabs() {
+      var btns = document.querySelectorAll('.tab-btn');
+      var panels = document.querySelectorAll('.tab-panel');
+      var key = 'lorecharacter_tab';
+      function show(id) {
+        btns.forEach(function(b) { b.classList.toggle('active', b.getAttribute('data-tab') === id); });
+        panels.forEach(function(p) { p.classList.toggle('active', p.getAttribute('data-panel') === id); });
+        try { if (window.localStorage) window.localStorage.setItem(key, id); } catch (e) {}
+      }
+      var saved = window.localStorage && window.localStorage.getItem(key);
+      var ok = ['reglament','duties','penalties','info'].indexOf(saved) >= 0;
+      show(ok ? saved : 'reglament');
+      btns.forEach(function(b) { b.addEventListener('click', function() { show(b.getAttribute('data-tab')); }); });
+    })();
+    (function initTricolorHover() {
+      var bodyEl = document.body;
+      var dot = document.getElementById('tricolorDot');
+      if (!bodyEl || !dot) return;
+      var timer = null;
+      dot.addEventListener('mouseenter', function() {
+        if (timer) { clearTimeout(timer); timer = null; }
+        bodyEl.classList.add('tricolor-bg');
+      });
+      dot.addEventListener('mouseleave', function() {
+        if (timer) clearTimeout(timer);
+        timer = setTimeout(function() {
+          bodyEl.classList.remove('tricolor-bg');
+          timer = null;
+        }, 2200);
+      });
+    })();
+    (function initBearHover() {
+      var bodyEl = document.body;
+      var dot = document.getElementById('bearDot');
+      if (!bodyEl || !dot) return;
+      var timer = null;
+      dot.addEventListener('mouseenter', function() {
+        if (timer) {
+          clearTimeout(timer);
+          timer = null;
+        }
+        bodyEl.classList.add('bear-bg');
+        bodyEl.classList.add('bear-focus');
+        timer = setTimeout(function() {
+          bodyEl.classList.remove('bear-bg');
+          bodyEl.classList.remove('bear-focus');
+          timer = null;
+        }, 2600);
+      });
+    })();
+    (function initMusicHover() {
+      var bodyEl = document.body;
+      var dot = document.getElementById('musicDot');
+      var audio = document.getElementById('bearAudio');
+      if (!bodyEl || !dot || !audio) return;
+      var unlocked = false;
+      var active = false;
+      var leaveTimer = null;
+      function unlockAudioOnce() {
+        if (unlocked) return;
+        unlocked = true;
+        try {
+          var p = audio.play();
+          if (p && typeof p.then === 'function') {
+            p.then(function() {
+              audio.pause();
+              audio.currentTime = 0;
+            }).catch(function() {});
+          }
+        } catch (e) {}
+      }
+      document.addEventListener('pointerdown', unlockAudioOnce, { once: true });
+      function startMusicMode() {
+        if (active) return;
+        active = true;
+        if (leaveTimer) {
+          clearTimeout(leaveTimer);
+          leaveTimer = null;
+        }
+        bodyEl.classList.add('music-mode');
+        bodyEl.classList.add('music-focus');
+        try {
+          if (audio.paused) audio.currentTime = 0;
+          var p = audio.play();
+          if (p && typeof p.catch === 'function') p.catch(function() {});
+        } catch (e) {}
+      }
+      function stopMusicMode() {
+        active = false;
+        bodyEl.classList.remove('music-mode');
+        bodyEl.classList.remove('music-focus');
+        try {
+          audio.pause();
+          audio.currentTime = 0;
+        } catch (e) {}
+      }
+      dot.addEventListener('mouseenter', function() {
+        startMusicMode();
+      });
+      dot.addEventListener('mouseleave', function() {
+        if (leaveTimer) clearTimeout(leaveTimer);
+        leaveTimer = setTimeout(function() {
+          stopMusicMode();
+          leaveTimer = null;
+        }, 120);
+      });
+      dot.addEventListener('click', function() {
+        unlockAudioOnce();
+        startMusicMode();
+      });
+      audio.addEventListener('ended', stopMusicMode);
+    })();
+  </script>
+</body>
+</html>
