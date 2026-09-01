@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Система /roll — Клинок, рассекающий демонов (переработанная)</title>
+  <title>Система /roll — Клинок, рассекающий демонов</title>
   <style>
     :root {
       --bg: #050711;
@@ -17,6 +17,7 @@
       --shadow: 0 18px 45px rgba(0, 0, 0, 0.6);
       --radius-lg: 18px;
       --radius-sm: 10px;
+      --gold: #fbbf24;
     }
     * {
       box-sizing: border-box;
@@ -117,6 +118,7 @@
       margin-bottom: 14px;
     }
     .highlight { color: var(--accent); font-weight: 600; }
+    .gold { color: var(--gold); font-weight: 700; }
     .chips {
       display: flex;
       flex-wrap: wrap;
@@ -132,6 +134,10 @@
       letter-spacing: 0.12em;
       color: var(--muted);
       background: rgba(15, 23, 42, 0.85);
+    }
+    .chip.gold {
+      border-color: var(--gold);
+      color: var(--gold);
     }
     .grid {
       display: grid;
@@ -150,6 +156,10 @@
       box-shadow: 0 10px 30px rgba(0, 0, 0, 0.45);
     }
     .card h2 { margin-top: 0; }
+    .card.gold-border {
+      border-color: rgba(251, 191, 36, 0.4);
+      background: radial-gradient(circle at top left, rgba(251, 191, 36, 0.08) 0, rgba(7, 10, 24, 0.96) 55%);
+    }
     table {
       width: 100%;
       border-collapse: collapse;
@@ -174,6 +184,8 @@
     }
     tr:nth-child(even) td { background: rgba(15, 23, 42, 0.75); }
     tr:hover td { background: rgba(30, 64, 175, 0.28); }
+    .row-gold td { background: rgba(251, 191, 36, 0.12) !important; }
+    .row-gold:hover td { background: rgba(251, 191, 36, 0.2) !important; }
     code {
       font-family: ui-monospace, Menlo, Monaco, "SFMono-Regular", Consolas, "Liberation Mono", "Courier New", monospace;
       font-size: 12px;
@@ -212,6 +224,10 @@
       border-color: rgba(248, 250, 252, 0.8);
       color: var(--text);
     }
+    .pill.gold {
+      border-color: var(--gold);
+      color: var(--gold);
+    }
     .note {
       font-size: 12px;
       color: var(--muted);
@@ -220,6 +236,11 @@
     .section { margin-top: 22px; }
     .accent-border {
       border-left: 3px solid var(--accent);
+      padding-left: 10px;
+      margin-top: 10px;
+    }
+    .gold-border-left {
+      border-left: 3px solid var(--gold);
       padding-left: 10px;
       margin-top: 10px;
     }
@@ -255,9 +276,39 @@
       background: #22c55e;
       box-shadow: 0 0 10px rgba(34, 197, 94, 0.9);
     }
+    .pill-inline .status.gold {
+      background: var(--gold);
+      box-shadow: 0 0 10px rgba(251, 191, 36, 0.9);
+    }
     a { color: var(--accent); text-decoration: none; }
     a:hover { text-decoration: underline; }
     .table-wrap { overflow-x: auto; }
+    .no-roll-badge {
+      display: inline-block;
+      padding: 2px 10px;
+      border-radius: 999px;
+      font-size: 10px;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: 0.08em;
+      background: rgba(251, 191, 36, 0.2);
+      border: 1px solid var(--gold);
+      color: var(--gold);
+    }
+    .no-roll-badge.inactive {
+      opacity: 0.4;
+      border-color: var(--muted);
+      color: var(--muted);
+      background: rgba(148, 163, 184, 0.1);
+    }
+    ul {
+      margin: 4px 0 10px;
+      padding-left: 20px;
+      color: var(--muted);
+      font-size: 14px;
+      line-height: 1.6;
+    }
+    ul li { margin-bottom: 2px; }
   </style>
 </head>
 <body>
@@ -271,14 +322,14 @@
     <div class="content">
       <div class="badge">
         <span class="badge-dot"></span>
-        <span>RP Combat System • Все роллятся</span>
+        <span>RP Combat System • Все роллятся (кроме особых случаев)</span>
       </div>
       <div>
         <h1>Система /roll для вселенной «Клинок, рассекающий демонов»</h1>
         <p class="lead">
           <span class="highlight">Обновлённое правило:</span> <strong>все персонажи обязаны делать /roll</strong>.
           Столпы (Хашира), Кровавая элита, Высшие и Низшие Луны получают фиксированные бонусы.
-          Обычные ранги имеют пониженные модификаторы.
+          <span class="gold">Мудзан Кибицуджи</span> и <span class="gold">Кокушибо</span> имеют особый статус.
         </p>
         <div class="chips">
           <div class="chip">/roll 0–100</div>
@@ -286,7 +337,9 @@
           <div class="chip">Высшие Луны +25</div>
           <div class="chip">Кровавая элита +15</div>
           <div class="chip">Низшие Луны +15</div>
-          <div class="chip">обычные ранги: +10 / +5 / +3</div>
+          <div class="chip">обычные: +10 / +5 / +3</div>
+          <div class="chip gold">Мудзан — no-roll (кроме 3+ Столпов)</div>
+          <div class="chip gold">Кокушибо — no-roll (кроме 2+ Столпов)</div>
         </div>
       </div>
 
@@ -300,7 +353,7 @@
           </p>
           <p>
             Бросок используется при любом конфликте: атака ↔ защита, уклонение,
-            перехват, борьба за инициативу. <strong>Теперь все роллятся</strong>, включая Хашира и Лун.
+            перехват, борьба за инициативу.
           </p>
           <h3>Формат команд</h3>
           <pre><code>/me Кокушибо (Высшая Луна) совершает горизонтальную атаку.
@@ -315,8 +368,8 @@
           <h3>Алгоритм хода</h3>
           <div class="accent-border">
             <p><strong>1.</strong> Игрок описывает намерение через <code>/me</code>.</p>
-            <p><strong>2.</strong> <strong>Все участники</strong> делают <code>/roll</code> (0–100).</p>
-            <p><strong>3.</strong> Добавляются бонусы за ранг согласно новой таблице.</p>
+            <p><strong>2.</strong> <strong>Все участники</strong> делают <code>/roll</code> (0–100), <span class="gold">кроме особых случаев</span>.</p>
+            <p><strong>3.</strong> Добавляются бонусы за ранг согласно таблице.</p>
             <p><strong>4.</strong> Сравниваются результаты, мастер формулирует эффект через <code>/do</code>.</p>
           </div>
         </article>
@@ -344,12 +397,11 @@
         </article>
       </section>
 
-      <!-- Ранги (обновлённые бонусы) -->
+      <!-- Ранги с бонусами -->
       <section class="section">
         <h2>Таблица рангов и бонусов к /roll</h2>
         <p>
-          Ранги определяют силу персонажа. Теперь <strong>все ранги обязаны роллиться</strong>,
-          но бонусы перераспределены. Для обычных рангов бонус зависит от разницы в рангах (смотрите ниже).
+          Ранги определяют силу персонажа. <strong>Все роллятся</strong>, но бонусы распределены согласно рангу.
         </p>
         <div class="table-wrap">
           <table>
@@ -357,7 +409,7 @@
               <tr><th>№</th><th>Ранг</th><th>Бонус к /roll</th><th>Примечание</th></tr>
             </thead>
             <tbody>
-              <tr><td>1</td><td>Сейто</td><td>+0</td><td>Новичок, без бонуса</td></tr>
+              <tr><td>1</td><td>Сейто</td><td>+0</td><td>Новичок</td></tr>
               <tr><td>2</td><td>Мидзуното</td><td>+0</td><td>Младший ранг</td></tr>
               <tr><td>3</td><td>Мидзуноэ</td><td>+0</td><td>Начальный боевой опыт</td></tr>
               <tr><td>4</td><td>Каното</td><td>+0</td><td>Стабильный боец</td></tr>
@@ -370,26 +422,65 @@
               <tr><td>11</td><td>Киноэ</td><td>+10</td><td>Максимум среди обычных рангов</td></tr>
               <tr><td>12</td><td>Цугуко</td><td>+15</td><td>Наследник Хаширы</td></tr>
               <tr style="border-top: 2px solid var(--accent);">
-                <td>13</td><td><strong>Столп (Хашира)</strong></td><td><strong>+20</strong></td><td>Элита Охотников, <span class="highlight">обязан роллиться</span></td>
+                <td>13</td><td><strong>Столп (Хашира)</strong></td><td><strong>+20</strong></td><td>Элита Охотников</td>
               </tr>
               <tr>
                 <td>14</td><td><strong>Низшая Луна</strong></td><td><strong>+15</strong></td><td>Демон-луна низшего ранга</td>
               </tr>
               <tr>
-                <td>15</td><td><strong>Кровавая элита</strong></td><td><strong>+15</strong></td><td>Элитные демоны</td>
+                <td>15</td><td><strong>Кровавая элита</strong></td><td><strong>+15</strong></td><td>Элитные демоны (слуги Лун)</td>
               </tr>
               <tr>
                 <td>16</td><td><strong>Высшая Луна</strong></td><td><strong>+25</strong></td><td>Сильнейшие демоны-луны</td>
+              </tr>
+              <tr class="row-gold">
+                <td>17</td><td><strong>Кокушибо</strong></td><td><strong>+25</strong></td><td>Верхняя Луна 1, <span class="gold">no-roll</span> против 1 Столпа</td>
+              </tr>
+              <tr class="row-gold">
+                <td>18</td><td><strong>Мудзан Кибицуджи</strong></td><td><strong>+25</strong></td><td>Прародитель демонов, <span class="gold">no-roll</span> против 1–2 Столпов</td>
               </tr>
             </tbody>
           </table>
         </div>
         <p class="note">
-          Бонусы <strong>суммируются</strong> с результатом /roll. Итоговое число не может превышать 100.
+          <span class="gold">★</span> Бонусы для Кокушибо и Мудзана — <strong>+25</strong> к /roll, когда они выходят из режима no-roll.
         </p>
       </section>
 
-      <!-- Бонусы для обычных рангов по разнице -->
+      <!-- Особый статус: Мудзан и Кокушибо -->
+      <section class="section">
+        <h2>Особый статус: <span class="gold">Мудзан Кибицуджи</span> и <span class="gold">Кокушибо</span></h2>
+        <div class="card gold-border">
+          <div style="display: flex; flex-wrap: wrap; gap: 12px; align-items: center; margin-bottom: 10px;">
+            <span class="no-roll-badge">⚡ NO-ROLL</span>
+            <span style="color: var(--muted); font-size: 13px;">по умолчанию</span>
+          </div>
+
+          <h3 style="color: var(--gold); margin-top: 0;">Мудзан Кибицуджи</h3>
+          <ul>
+            <li><strong>По умолчанию:</strong> <span class="gold">no-roll</span> — его действия считаются успешными против любого количества противников.</li>
+            <li><strong>Исключение:</strong> выходит из режима no-roll, если <strong>против него сражаются 3 или более Столпов (Хашира)</strong>.</li>
+            <li><strong>Бонус при ролле:</strong> <span class="gold">+25</span> к результату /roll.</li>
+          </ul>
+
+          <h3 style="color: var(--gold);">Кокушибо (Верхняя Луна 1)</h3>
+          <ul>
+            <li><strong>По умолчанию:</strong> <span class="gold">no-roll</span> — его действия считаются успешными против большинства противников.</li>
+            <li><strong>Исключение:</strong> выходит из режима no-roll, если <strong>против него сражаются 2 или более Столпов (Хашира)</strong>.</li>
+            <li><strong>Бонус при ролле:</strong> <span class="gold">+25</span> к результату /roll.</li>
+          </ul>
+
+          <div class="gold-border-left">
+            <p style="color: var(--text);"><strong>Пример:</strong></p>
+            <pre style="border-color: var(--gold);"><code>Ситуация: Мудзан против 2 Столпов → Мудзан no-roll, Столпы роллятся.
+Ситуация: Мудзан против 3 Столпов → Мудзан роллится с +25, Столпы с +20.
+Ситуация: Кокушибо против 1 Столпа → Кокушибо no-roll.
+Ситуация: Кокушибо против 2 Столпов → Кокушибо роллится с +25.</code></pre>
+          </div>
+        </div>
+      </section>
+
+      <!-- Бонусы для обычных рангов -->
       <section class="section">
         <h2>Бонусы для обычных рангов (Сейто–Киноэ)</h2>
         <p>
@@ -412,36 +503,65 @@
         </p>
       </section>
 
-      <!-- Примеры боёв (обновлённые) -->
+      <!-- Кровавая элита — уточнение -->
+      <section class="section">
+        <h2>Кровавая элита — уточнение</h2>
+        <p>
+          <strong>Кровавая элита</strong> — это демоны, стоящие на службе у Лун, но не достигшие ранга Луны.
+          Они сильнее обычных демонов, но уступают Низшим Лунам.
+        </p>
+        <ul>
+          <li><strong>Бонус:</strong> <span class="highlight">+15</span> к /roll.</li>
+          <li><strong>Статус:</strong> всегда роллятся, не имеют no-roll.</li>
+          <li><strong>Примеры:</strong> слуги Верхних Лун, элитные стражи, приближённые Мудзана.</li>
+          <li><strong>Против Хаширы:</strong> Хашира имеет преимущество в +5 (20 против 15).</li>
+          <li><strong>Против обычных рангов:</strong> Кровавая элита имеет серьёзное преимущество.</li>
+        </ul>
+        <div class="accent-border">
+          <p><strong>Важно:</strong> Кровавая элита — это <em>не</em> Луна. Они не получают no-roll и не имеют особых статусов, как у Мудзана или Кокушибо.</p>
+        </div>
+      </section>
+
+      <!-- Примеры боёв -->
       <section class="section">
         <h2>Примеры боёв с новой системой</h2>
 
-        <h3>Хашира против Низшей Луны</h3>
-        <pre><code>Гию Томиока (Столп воды) +20
-/roll → 45 + 20 = 65
-Низшая Луна +15
-/roll → 52 + 15 = 67
-→ Низшая Луна чуть успешнее, Хашира получает лёгкую рану.
+        <h3>Мудзан против 2 Столпов (no-roll)</h3>
+        <pre><code>Мудзан Кибицуджи — no-roll (действие успешно по умолчанию).
+Столп воды (Гию) — /roll: 45 + 20 = 65
+Столп пламени (Ренгоку) — /roll: 52 + 20 = 72
+→ Мудзан атакует, Столпы пытаются защититься. Результаты показывают, насколько им удалось смягчить удар.
         </code></pre>
 
-        <h3>Высшая Луна против Цугуко</h3>
-        <pre><code>Кокушибо (Высшая Луна) +25
-/roll → 40 + 25 = 65
-Цугуко +15
-/roll → 60 + 15 = 75
-→ Цугуко уворачивается от атаки Высшей Луны.
+        <h3>Мудзан против 3 Столпов (выход из no-roll)</h3>
+        <pre><code>Мудзан Кибицуджи — /roll: 40 + 25 = 65
+Столп воды — /roll: 55 + 20 = 75
+Столп пламени — /roll: 60 + 20 = 80
+Столп ветра — /roll: 48 + 20 = 68
+→ Столпы совместными усилиями сдерживают атаку Мудзана.
+        </code></pre>
+
+        <h3>Кокушибо против 1 Столпа (no-roll)</h3>
+        <pre><code>Кокушибо — no-roll (действие успешно).
+Столп камня — /roll: 60 + 20 = 80
+→ Кокушибо атакует, Столп пытается защититься.
+        </code></pre>
+
+        <h3>Кокушибо против 2 Столпов (выход из no-roll)</h3>
+        <pre><code>Кокушибо — /roll: 55 + 25 = 80
+Столп воды — /roll: 70 + 20 = 90
+Столп ветра — /roll: 45 + 20 = 65
+→ Столп воды успешно парирует атаку, Столп ветра получает ранение.
         </code></pre>
 
         <h3>Кровавая элита против обычного ранга</h3>
-        <pre><code>Кровавая элита +15
-/roll → 30 + 15 = 45
-Киноэ (обычный ранг, разница 5 → +10)
-/roll → 40 + 10 = 50
+        <pre><code>Кровавая элита — /roll: 30 + 15 = 45
+Киноэ (обычный ранг, разница 5 → +10) — /roll: 40 + 10 = 50
 → Киноэ отражает атаку элитного демона.
         </code></pre>
       </section>
 
-      <!-- Кто кидает (теперь все) -->
+      <!-- Кто кидает (обновлено) -->
       <section class="section">
         <h2>Кто кидает /roll в разных ситуациях (обновлено)</h2>
         <div class="table-wrap">
@@ -450,26 +570,36 @@
               <tr><th>Ситуация</th><th>Кто бросает</th><th>Бонусы</th></tr>
             </thead>
             <tbody>
-              <tr><td>Оба — обычные ранги</td><td>Оба</td><td>По разнице рангов (см. выше)</td></tr>
-              <tr><td>Обычный ранг против Цугуко</td><td>Оба</td><td>Цугуко +15, обычный — по разнице</td></tr>
+              <tr><td>Оба — обычные ранги</td><td>Оба</td><td>По разнице рангов</td></tr>
+              <tr><td>Обычный ранг против Цугуко</td><td>Оба</td><td>Цугуко +15</td></tr>
               <tr><td>Обычный ранг против Хаширы</td><td>Оба</td><td>Хашира +20</td></tr>
               <tr><td>Обычный ранг против Низшей Луны</td><td>Оба</td><td>Низшая Луна +15</td></tr>
               <tr><td>Обычный ранг против Кровавой элиты</td><td>Оба</td><td>Кровавая элита +15</td></tr>
               <tr><td>Обычный ранг против Высшей Луны</td><td>Оба</td><td>Высшая Луна +25</td></tr>
               <tr><td>Хашира против Высшей Луны</td><td>Оба</td><td>Хашира +20, Высшая Луна +25</td></tr>
-              <tr><td>Цугуко против Хаширы</td><td>Оба</td><td>Цугуко +15, Хашира +20</td></tr>
-              <tr><td>Низшая Луна против Высшей Луны</td><td>Оба</td><td>Низшая +15, Высшая +25</td></tr>
+              <tr style="border-top: 2px solid var(--gold);">
+                <td><strong>Мудзан против 1–2 Столпов</strong></td><td><strong>Только Столпы</strong></td><td><span class="gold">Мудзан no-roll</span></td>
+              </tr>
+              <tr>
+                <td><strong>Мудзан против 3+ Столпов</strong></td><td><strong>Все</strong></td><td><span class="gold">Мудзан +25</span>, Столпы +20</td>
+              </tr>
+              <tr>
+                <td><strong>Кокушибо против 1 Столпа</strong></td><td><strong>Только Столп</strong></td><td><span class="gold">Кокушибо no-roll</span></td>
+              </tr>
+              <tr>
+                <td><strong>Кокушибо против 2+ Столпов</strong></td><td><strong>Все</strong></td><td><span class="gold">Кокушибо +25</span>, Столпы +20</td>
+              </tr>
             </tbody>
           </table>
         </div>
         <p class="note">
-          Во всех случаях бросают <strong>все участники</strong>. No roll более не применяется.
+          <span class="gold">★</span> Мудзан и Кокушибо имеют базовый бонус <strong>+25</strong> в тех случаях, когда они вынуждены роллиться.
         </p>
       </section>
 
       <footer class="footer">
-        <span>Система /roll для ролевых игр по вселенной «Клинок, рассекающий демонов» (обновлённая).</span>
-        <span>Все роллятся. Бонусы: Хашира +20, Высшие Луны +25, Кровавая элита +15, Низшие Луны +15, обычные +10/5/3.</span>
+        <span>Система /roll для ролевых игр по вселенной «Клинок, рассекающий демонов».</span>
+        <span>Мудзан: no-roll (3+ Столпов — ролл +25) • Кокушибо: no-roll (2+ Столпов — ролл +25)</span>
       </footer>
     </div>
   </main>
